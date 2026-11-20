@@ -465,7 +465,7 @@
       <div class="brand-icon">GA</div>
       <div>
         <h1>Smart Cleaning & Facility Care</h1>
-        <p>QR Inspection &bull; Complaint SLA &bull; Real-Time Cloud Sync</p>
+        <p>QR Inspection &bull; Complaint SLA &bull; Google Sheets Live Sync</p>
       </div>
     </div>
 
@@ -479,9 +479,9 @@
         <span id="roleLabel">Mode Petugas / Admin</span>
       </button>
 
-      <button class="sync-pill" id="headerSyncBtn" style="display:none;" onclick="openSyncModal()" title="Konfigurasi Supabase Cloud Database">
+      <button class="sync-pill" id="headerSyncBtn" style="display:none;" onclick="openSyncModal()" title="Konfigurasi Google Apps Script Web App URL">
         <span class="sync-dot" id="syncDot"></span>
-        <span id="syncText">Live DB</span>
+        <span id="syncText">Sheets Sync</span>
       </button>
     </div>
   </div>
@@ -671,11 +671,11 @@
     <div class="card">
       <div class="card-header">
         <div>
-          <div class="card-title">Daftar Complaint & Follow-Up SLA (Live Semua Perangkat)</div>
+          <div class="card-title">Daftar Complaint & Follow-Up SLA (Live Google Sheets)</div>
           <div class="card-sub">Update status penanganan, isi Root Cause & Corrective Action untuk menutup tiket</div>
         </div>
         <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
-          <button type="button" class="btn btn-outline btn-sm" onclick="syncFromCloud(true)">&#128260; Refresh Data</button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="syncFromSheets(true)">&#128260; Refresh Data</button>
           <select id="filterTicketStatus" onchange="renderTickets()" style="width:auto;">
             <option value="ALL">Semua Status</option>
             <option value="ACTIVE" selected>Belum Closed (Open / In Progress / Hold)</option>
@@ -747,9 +747,9 @@
         </div>
       </div>
       <div style="display:flex; flex-wrap:wrap; gap:8px;">
-        <button class="btn btn-outline btn-sm" onclick="syncFromCloud(true)">&#128260; Refresh Live</button>
+        <button class="btn btn-outline btn-sm" onclick="syncFromSheets(true)">&#128260; Refresh Sheets</button>
         <button class="btn btn-primary btn-sm" onclick="openCategoryModal()">&#10133; Kelola Kategori</button>
-        <button class="btn btn-excel btn-sm" onclick="exportCsv()">&#128229; Export Excel CSV</button>
+        <button class="btn btn-excel btn-sm" onclick="exportCsv()">&#128229; Export CSV</button>
         <button class="btn btn-outline btn-sm" onclick="window.print()">&#128424; Print Laporan / QR</button>
       </div>
     </div>
@@ -855,7 +855,7 @@
     <div class="success-circle">&#10003;</div>
     <h3 style="font-size:1.15rem; font-weight:800; color:var(--text);">Laporan Terkirim & Form Di-Reset</h3>
     <p style="font-size:0.82rem; color:var(--muted); margin-top:4px;">
-      Laporan sudah masuk secara real-time ke sistem GA &amp; form telah dibersihkan untuk pelapor berikutnya.
+      Laporan sudah masuk ke Google Sheets &amp; form telah dibersihkan untuk pelapor berikutnya.
     </p>
 
     <div class="receipt-box" id="confirmReceiptBox"></div>
@@ -878,7 +878,7 @@
     <div class="card-header">
       <div>
         <div class="card-title">Template Kategori Masalah Fasilitas</div>
-        <div class="card-sub">Standarisasi format kategori baru agar seragam di semua perangkat &amp; Excel</div>
+        <div class="card-sub">Standarisasi format kategori baru agar seragam di semua perangkat &amp; Google Sheets</div>
       </div>
       <button class="btn btn-outline btn-sm" onclick="closeCategoryModal()">Tutup</button>
     </div>
@@ -886,7 +886,7 @@
     <form onsubmit="saveCustomCategory(event)">
       <div class="form-grid">
         <div class="form-group">
-          <label>Objek / Nama Kategori (Value Excel) *</label>
+          <label>Objek / Nama Kategori (Value Sheet) *</label>
           <input type="text" id="newCatObj" placeholder="Contoh: AC / Exhaust atau Pintu" oninput="updateCategoryPreview()" required />
         </div>
         <div class="form-group">
@@ -920,7 +920,7 @@
         <div>
           <div style="font-size:0.72rem; font-weight:700; color:var(--primary-dark); text-transform:uppercase;">Preview Standar Tampilan</div>
           <div style="font-size:0.95rem; font-weight:800; color:var(--text); margin-top:2px;" id="catPreviewLabel">Objek (Kondisi 1 / Kondisi 2)</div>
-          <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;" id="catPreviewMeta">Value Excel: - &bull; PIC: Area Default &bull; SLA: Medium</div>
+          <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;" id="catPreviewMeta">Value Sheet: - &bull; PIC: Area Default &bull; SLA: Medium</div>
         </div>
         <span class="badge badge-teal">Standar Format</span>
       </div>
@@ -965,7 +965,7 @@
         <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="Masukkan PIN..." required />
         <div style="font-size:0.75rem; color:var(--muted); margin-top:6px;">
           &bull; <strong>PIN Petugas Cleaning:</strong> Buka Checklist Inspeksi &amp; Follow-Up Tiket<br>
-          &bull; <strong>PIN Admin GA:</strong> Buka Dashboard, Tambah Kategori &amp; Config Live DB
+          &bull; <strong>PIN Admin GA:</strong> Buka Dashboard, Tambah Kategori &amp; Config Sheets
         </div>
       </div>
       <button type="submit" class="btn btn-primary btn-block">Buka Akses</button>
@@ -1016,40 +1016,35 @@
 </div>
 
 <!-- ========================================================= -->
-<!-- MODAL: SUPABASE REAL-TIME CLOUD DATABASE CONFIG           -->
+<!-- MODAL: GOOGLE APPS SCRIPT WEB APP CONFIG                  -->
 <!-- ========================================================= -->
 <div class="modal-backdrop" id="syncModal">
   <div class="modal-box">
     <div class="card-header">
       <div>
-        <div class="card-title">Koneksi Real-Time Database (Supabase)</div>
-        <div class="card-sub">Sinkronisasi 2-arah instan (< 0.3 detik) antar semua HP &amp; Laptop tanpa Google</div>
+        <div class="card-title">Koneksi Google Sheets (Apps Script Web App)</div>
+        <div class="card-sub">Sinkronisasi 2-arah langsung ke Google Spreadsheet</div>
       </div>
       <button class="btn btn-outline btn-sm" onclick="closeSyncModal()">Tutup</button>
     </div>
 
     <div class="form-group">
-      <label>Supabase Project URL</label>
-      <input type="url" id="sbUrlInput" placeholder="https://xxxxxxxxxxxx.supabase.co" />
-    </div>
-
-    <div class="form-group">
-      <label>Supabase Anon Public Key</label>
-      <input type="text" id="sbKeyInput" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+      <label>Google Apps Script Web App URL</label>
+      <input type="url" id="gasUrlInput" placeholder="https://script.google.com/macros/s/AKfycb.../exec" />
       <div style="font-size:0.75rem; color:var(--muted); margin-top:5px;">
-        Ambil dari <strong>Supabase Dashboard &rarr; Project Settings &rarr; API</strong> (atau paste langsung ke konstanta <code>SUPABASE_URL</code> &amp; <code>SUPABASE_ANON_KEY</code> di file <code>index.html</code> agar otomatis aktif di semua HP).
+        Salin URL <strong>Web app</strong> dari Google Apps Script (atau paste langsung ke <code>GAS_WEB_APP_URL</code> di <code>index.html</code>).
       </div>
     </div>
 
     <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:9px; padding:12px; font-size:0.8rem; margin-bottom:14px;">
-      <div><strong>Status Koneksi:</strong> <span id="sbStatusDetail">Belum dikonfigurasi</span></div>
-      <div style="color:var(--muted); margin-top:4px;">Terakhir sinkron: <span id="sbLastSyncTime">-</span></div>
+      <div><strong>Status Koneksi:</strong> <span id="gasStatusDetail">Belum dikonfigurasi</span></div>
+      <div style="color:var(--muted); margin-top:4px;">Terakhir sinkron: <span id="gasLastSyncTime">-</span></div>
     </div>
 
     <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between;">
       <div style="display:flex; gap:6px; flex-wrap:wrap;">
-        <button type="button" class="btn btn-outline btn-sm" onclick="testSupabaseConnection()">&#9889; Tes Koneksi</button>
-        <button type="button" class="btn btn-outline btn-sm" onclick="seedBaselineToSupabase()">&#128228; Upload Data Simulasi</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="testGasConnection()">&#9889; Tes Koneksi</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="seedBaselineToSheets()">&#128228; Seed Data Simulasi</button>
       </div>
       <button type="button" class="btn btn-primary btn-sm" onclick="saveSyncConfig()">Simpan &amp; Hubungkan</button>
     </div>
@@ -1060,12 +1055,10 @@
 
 <script>
   // ============================================================================
-  // 1. KONFIGURASI UTAMA (SUPABASE REAL-TIME DB, PIN AKSES, PIC & MASTER AREA)
+  // 1. KONFIGURASI UTAMA (GOOGLE APPS SCRIPT URL, PIN AKSES, PIC & MASTER AREA)
   // ============================================================================
-  // Paste Project URL & Anon Public Key dari Supabase di sini sebelum commit ke GitHub
-  // agar setiap HP yang scan QR otomatis terhubung ke database bersama:
-  const SUPABASE_URL = "https://gtnidopwgojighqtjkgi.supabase.co/rest/v1/";
-  const SUPABASE_ANON_KEY = "sb_publishable_e2kBa_EQUEDvXsVlzZFdTw_wVx_8twr";
+  // Paste URL Web App Google Apps Script di sini sebelum commit ke GitHub:
+  const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwro9G-8DOV1o0rQtSgmgwTu-uMQDvZxi0QoXBdXtNIx8wVJiLGx71NEPR_mT8CkK_iJw/exec";
 
   // Opsional: Isi nomor WhatsApp grup/hotline GA (format 62812xxxx) untuk tombol Alert Darurat
   const GA_EMERGENCY_WA = "";
@@ -1113,12 +1106,11 @@
   const SLA_HOURS = { Critical: 2, High: 4, Medium: 8, Low: 24 };
 
   const STORAGE_KEYS = {
-    INSPECTIONS: "ga_clean_inspections_sb1",
-    COMPLAINTS: "ga_clean_complaints_sb1",
-    CUSTOM_CATS: "ga_clean_custom_cats_sb1",
-    SB_URL: "ga_clean_sb_url_sb1",
-    SB_KEY: "ga_clean_sb_key_sb1",
-    ACTIVE_ROLE: "ga_clean_active_role_sb1"
+    INSPECTIONS: "ga_clean_inspections_gs1",
+    COMPLAINTS: "ga_clean_complaints_gs1",
+    CUSTOM_CATS: "ga_clean_custom_cats_gs1",
+    GAS_URL: "ga_clean_gas_url_gs1",
+    ACTIVE_ROLE: "ga_clean_active_role_gs1"
   };
 
   let currentAreaCode = "TLT-01";
@@ -1130,7 +1122,7 @@
   let autoPollTimer = null;
 
   // ============================================================================
-  // 2. DATA SIMULASI AWAL (FALLBACK LOKAL / SEED KE CLOUD DB)
+  // 2. DATA SIMULASI AWAL
   // ============================================================================
   function buildBaselineData() {
     const baseInspections = [];
@@ -1246,178 +1238,75 @@
   }
 
   // ============================================================================
-  // 3. SUPABASE REST API CLIENT (2-WAY LIVE MULTI-DEVICE SYNC)
+  // 3. GOOGLE APPS SCRIPT CLIENT (2-WAY SYNC KE GOOGLE SHEETS)
   // ============================================================================
-  function getSupabaseConfig() {
-    const localUrl = (localStorage.getItem(STORAGE_KEYS.SB_URL) || "").trim();
-    const localKey = (localStorage.getItem(STORAGE_KEYS.SB_KEY) || "").trim();
-    const url = (localUrl || SUPABASE_URL.trim()).replace(/\/+$/, "");
-    const key = localKey || SUPABASE_ANON_KEY.trim();
-    return { url, key, enabled: Boolean(url && key) };
+  function getGasUrl() {
+    const saved = (localStorage.getItem(STORAGE_KEYS.GAS_URL) || "").trim();
+    return (saved || GAS_WEB_APP_URL.trim());
   }
 
   function updateSyncIndicator(state, label, detail) {
     document.getElementById("syncDot").className = "sync-dot " + (state || "");
     document.getElementById("syncText").innerText = label;
-    if (detail) document.getElementById("sbStatusDetail").innerText = detail;
+    if (detail) document.getElementById("gasStatusDetail").innerText = detail;
   }
 
-  async function sbRequest(path, options = {}) {
-    const { url, key, enabled } = getSupabaseConfig();
-    if (!enabled) throw new Error("Supabase belum dikonfigurasi");
+  // POST pakai text/plain agar terhindar dari preflight CORS block pada Google Apps Script
+  async function gasPost(action, payload = {}) {
+    const url = getGasUrl();
+    if (!url) throw new Error("GAS Web App URL belum diisi");
 
-    const headers = {
-      "apikey": key,
-      "Authorization": `Bearer ${key}`,
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    };
-
-    const res = await fetch(`${url}/rest/v1/${path}`, {
-      ...options,
-      headers
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify({ action, ...payload })
     });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`HTTP ${res.status}: ${errText}`);
-    }
-
-    if (res.status === 204) return null;
-    const text = await res.text();
-    return text ? JSON.parse(text) : null;
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (data && data.ok === false) throw new Error(data.error || "Apps Script error");
+    return data;
   }
 
-  function mapComplaintToDb(c) {
-    return {
-      id: c.id,
-      timestamp: c.timestamp,
-      reporter: c.reporter,
-      department: c.department,
-      area_code: c.areaCode,
-      area_name: c.areaName,
-      category: c.category,
-      description: c.description,
-      priority: c.priority,
-      status: c.status,
-      pic: c.pic,
-      target_close: c.targetClose,
-      actual_close: c.actualClose || "",
-      resolution_hours: c.resolutionHours,
-      sla_status: c.slaStatus,
-      root_cause: c.rootCause || "",
-      corrective_action: c.correctiveAction || "",
-      repeat_complaint: c.repeatComplaint || "No",
-      evidence: c.evidence || ""
-    };
-  }
-
-  function mapComplaintFromDb(row) {
-    return {
-      id: row.id,
-      timestamp: row.timestamp || "",
-      reporter: row.reporter || "",
-      department: row.department || "",
-      areaCode: row.area_code || "",
-      areaName: row.area_name || "",
-      category: row.category || "",
-      description: row.description || "",
-      priority: row.priority || "Medium",
-      status: row.status || "Open",
-      pic: row.pic || "",
-      targetClose: row.target_close || "",
-      actualClose: row.actual_close || "",
-      resolutionHours: row.resolution_hours !== null && row.resolution_hours !== undefined ? Number(row.resolution_hours) : null,
-      slaStatus: row.sla_status || "OPEN",
-      rootCause: row.root_cause || "",
-      correctiveAction: row.corrective_action || "",
-      repeatComplaint: row.repeat_complaint || "No",
-      evidence: row.evidence || ""
-    };
-  }
-
-  function mapInspectionToDb(i) {
-    return {
-      id: i.id,
-      date: i.date,
-      time: i.time,
-      shift: i.shift,
-      area_code: i.areaCode,
-      area_name: i.areaName,
-      inspector: i.inspector,
-      params: i.params || {},
-      kurang_count: i.kurangCount,
-      condition: i.condition,
-      finding_detail: i.findingDetail || "-",
-      action: i.action || "Monitor",
-      pic_action: i.picAction || "",
-      due_date: i.dueDate || "",
-      closed_date: i.closedDate || "",
-      sla_status: i.slaStatus || "OK",
-      evidence: i.evidence || ""
-    };
-  }
-
-  function mapInspectionFromDb(row) {
-    return {
-      id: row.id,
-      date: row.date || "",
-      time: row.time || "",
-      shift: row.shift || "",
-      areaCode: row.area_code || "",
-      areaName: row.area_name || "",
-      inspector: row.inspector || "",
-      params: row.params || {},
-      kurangCount: Number(row.kurang_count || 0),
-      condition: row.condition || "Good",
-      findingDetail: row.finding_detail || "-",
-      action: row.action || "Monitor",
-      picAction: row.pic_action || "",
-      dueDate: row.due_date || "",
-      closedDate: row.closed_date || "",
-      slaStatus: row.sla_status || "OK",
-      evidence: row.evidence || ""
-    };
-  }
-
-  async function syncFromCloud(showNotification = false) {
-    const { enabled } = getSupabaseConfig();
-    if (!enabled) {
-      updateSyncIndicator("", "DB: Lokal", "Mode Lokal (Isi Supabase URL & Key untuk Live Sync)");
+  async function syncFromSheets(showNotification = false) {
+    const url = getGasUrl();
+    if (!url) {
+      updateSyncIndicator("", "Sheets: Lokal", "Mode Lokal (Isi GAS Web App URL untuk Live Sync)");
       return false;
     }
 
     updateSyncIndicator("syncing", "Syncing...");
     try {
-      const [cmpRows, insRows, catRows] = await Promise.all([
-        sbRequest("complaints?select=*&order=timestamp.desc"),
-        sbRequest("inspections?select=*&order=date.desc,time.desc"),
-        sbRequest("custom_categories?select=*&order=created_at.asc")
-      ]);
+      const res = await fetch(`${url}?action=getAll&_t=${Date.now()}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || "Gagal membaca data Sheets");
 
-      complaints = (cmpRows || []).map(mapComplaintFromDb);
-      inspections = (insRows || []).map(mapInspectionFromDb);
-      customCategories = (catRows || []).map(r => ({
-        value: r.value,
-        condition: r.condition,
-        picRoute: r.pic_route || "AREA_DEFAULT",
-        defaultPriority: r.default_priority || "Medium",
-        builtIn: false
-      }));
+      complaints = Array.isArray(data.complaints) ? data.complaints : [];
+      inspections = Array.isArray(data.inspections) ? data.inspections : [];
+      if (Array.isArray(data.customCategories)) {
+        customCategories = data.customCategories.map(c => ({
+          value: c.value,
+          condition: c.condition,
+          picRoute: c.picRoute || "AREA_DEFAULT",
+          defaultPriority: c.defaultPriority || "Medium",
+          builtIn: false
+        }));
+      }
 
       saveLocalCache();
       renderCategoryChips();
       renderAll();
 
       const nowStr = formatDateTime(new Date());
-      document.getElementById("sbLastSyncTime").innerText = nowStr;
-      updateSyncIndicator("connected", "Live DB: Aktif", `Terhubung ke Supabase (${complaints.length} komplain, ${inspections.length} inspeksi)`);
-      if (showNotification) showToast("Data terbaru berhasil dimuat dari Cloud DB!");
+      document.getElementById("gasLastSyncTime").innerText = nowStr;
+      updateSyncIndicator("connected", "Sheets: Aktif", `Terhubung ke Google Sheets (${complaints.length} komplain, ${inspections.length} inspeksi)`);
+      if (showNotification) showToast("Data terbaru berhasil disinkronkan dari Google Sheets!");
       return true;
     } catch (err) {
-      console.error("Supabase sync error:", err);
-      updateSyncIndicator("error", "Live DB: Error", `Gagal terhubung: ${err.message}`);
-      if (showNotification) showToast("Gagal mengambil data dari Supabase. Cek URL/Key.");
+      console.error("GAS sync error:", err);
+      updateSyncIndicator("error", "Sheets: Error", `Gagal terhubung: ${err.message}`);
+      if (showNotification) showToast("Gagal terhubung ke Google Sheets. Cek URL & Deploy permission.");
       return false;
     }
   }
@@ -1425,69 +1314,52 @@
   function startAutoPolling() {
     if (autoPollTimer) clearInterval(autoPollTimer);
     autoPollTimer = setInterval(() => {
-      const { enabled } = getSupabaseConfig();
-      if (enabled && !document.querySelector(".modal-backdrop.open")) {
-        syncFromCloud(false);
+      if (getGasUrl() && !document.querySelector(".modal-backdrop.open")) {
+        syncFromSheets(false);
       }
-    }, 15000); // Auto-refresh setiap 15 detik agar semua layar selalu real-time
+    }, 15000);
   }
 
   function openSyncModal() {
-    const cfg = getSupabaseConfig();
-    document.getElementById("sbUrlInput").value = cfg.url;
-    document.getElementById("sbKeyInput").value = cfg.key;
+    document.getElementById("gasUrlInput").value = getGasUrl();
     document.getElementById("syncModal").classList.add("open");
   }
   function closeSyncModal() { document.getElementById("syncModal").classList.remove("open"); }
 
   async function saveSyncConfig() {
-    const url = document.getElementById("sbUrlInput").value.trim().replace(/\/+$/, "");
-    const key = document.getElementById("sbKeyInput").value.trim();
-    localStorage.setItem(STORAGE_KEYS.SB_URL, url);
-    localStorage.setItem(STORAGE_KEYS.SB_KEY, key);
+    const url = document.getElementById("gasUrlInput").value.trim();
+    localStorage.setItem(STORAGE_KEYS.GAS_URL, url);
     closeSyncModal();
-    if (url && key) {
-      await syncFromCloud(true);
+    if (url) {
+      await syncFromSheets(true);
       startAutoPolling();
     } else {
-      updateSyncIndicator("", "DB: Lokal", "Mode Lokal");
-      showToast("Kredensial dihapus (kembali ke mode lokal).");
+      updateSyncIndicator("", "Sheets: Lokal", "Mode Lokal");
+      showToast("URL dihapus (kembali ke mode lokal).");
     }
   }
 
-  async function testSupabaseConnection() {
-    const url = document.getElementById("sbUrlInput").value.trim().replace(/\/+$/, "");
-    const key = document.getElementById("sbKeyInput").value.trim();
-    if (!url || !key) return showToast("Masukkan Supabase URL & Anon Key terlebih dahulu.");
-    localStorage.setItem(STORAGE_KEYS.SB_URL, url);
-    localStorage.setItem(STORAGE_KEYS.SB_KEY, key);
-    const ok = await syncFromCloud(true);
+  async function testGasConnection() {
+    const url = document.getElementById("gasUrlInput").value.trim();
+    if (!url) return showToast("Masukkan GAS Web App URL terlebih dahulu.");
+    localStorage.setItem(STORAGE_KEYS.GAS_URL, url);
+    const ok = await syncFromSheets(true);
     if (ok) startAutoPolling();
   }
 
-  async function seedBaselineToSupabase() {
-    const { enabled } = getSupabaseConfig();
-    if (!enabled) return showToast("Simpan Supabase URL & Key terlebih dahulu.");
-    if (!confirm("Upload 70 data inspeksi & 5 komplain simulasi awal ke Supabase?")) return;
+  async function seedBaselineToSheets() {
+    if (!getGasUrl()) return showToast("Simpan GAS Web App URL terlebih dahulu.");
+    if (!confirm("Kirim 70 data inspeksi & 5 komplain simulasi awal ke Google Sheets?")) return;
 
     const { baseInspections, baseComplaints } = buildBaselineData();
     try {
-      updateSyncIndicator("syncing", "Uploading...");
-      await sbRequest("complaints?on_conflict=id", {
-        method: "POST",
-        headers: { "Prefer": "resolution=merge-duplicates" },
-        body: JSON.stringify(baseComplaints.map(mapComplaintToDb))
-      });
-      await sbRequest("inspections?on_conflict=id", {
-        method: "POST",
-        headers: { "Prefer": "resolution=merge-duplicates" },
-        body: JSON.stringify(baseInspections.map(mapInspectionToDb))
-      });
-      await syncFromCloud(false);
-      showToast("70 inspeksi & 5 komplain simulasi berhasil di-upload ke Supabase!");
+      updateSyncIndicator("syncing", "Seeding...");
+      await gasPost("seedBaseline", { inspections: baseInspections, complaints: baseComplaints });
+      await syncFromSheets(false);
+      showToast("Data simulasi berhasil dikirim ke Google Sheets!");
     } catch (err) {
-      updateSyncIndicator("error", "Live DB: Error", err.message);
-      alert("Gagal upload simulasi: " + err.message);
+      updateSyncIndicator("error", "Sheets: Error", err.message);
+      alert("Gagal seed ke Google Sheets: " + err.message);
     }
   }
 
@@ -1556,7 +1428,7 @@
 
     document.getElementById("catPreviewLabel").innerText = `${obj} (${condText})`;
     const routeLabel = route === "AREA_DEFAULT" ? "PIC Area Default" : route;
-    document.getElementById("catPreviewMeta").innerText = `Value Excel: "${obj}" • PIC: ${routeLabel} • SLA: ${prio}`;
+    document.getElementById("catPreviewMeta").innerText = `Value Sheet: "${obj}" • PIC: ${routeLabel} • SLA: ${prio}`;
   }
 
   async function saveCustomCategory(e) {
@@ -1590,21 +1462,10 @@
     renderCategoryManageTable();
     selectCategoryChip(obj);
 
-    const { enabled } = getSupabaseConfig();
-    if (enabled) {
+    if (getGasUrl()) {
       try {
-        await sbRequest("custom_categories", {
-          method: "POST",
-          body: JSON.stringify({
-            value: newCat.value,
-            condition: newCat.condition,
-            pic_route: newCat.picRoute,
-            default_priority: newCat.defaultPriority
-          })
-        });
-      } catch (err) {
-        console.error("Gagal simpan kategori ke Supabase:", err);
-      }
+        await gasPost("addCategory", { category: newCat });
+      } catch (err) { console.error(err); }
     }
 
     document.getElementById("newCatObj").value = "";
@@ -1624,10 +1485,9 @@
       selectCategoryChip("Tissue");
     }
 
-    const { enabled } = getSupabaseConfig();
-    if (enabled) {
+    if (getGasUrl()) {
       try {
-        await sbRequest(`custom_categories?value=eq.${encodeURIComponent(catValue)}`, { method: "DELETE" });
+        await gasPost("deleteCategory", { value: catValue });
       } catch (err) { console.error(err); }
     }
     showToast(`Kategori "${catValue}" dihapus.`);
@@ -1720,12 +1580,12 @@
     if (entered === ROLE_PINS.ADMIN) {
       closePinModal();
       applyRoleUI("ADMIN");
-      syncFromCloud(false);
+      syncFromSheets(false);
       showToast("Berhasil masuk sebagai Admin GA.");
     } else if (entered === ROLE_PINS.STAFF) {
       closePinModal();
       applyRoleUI("STAFF");
-      syncFromCloud(false);
+      syncFromSheets(false);
       showToast("Berhasil masuk sebagai Petugas Cleaning / Maintenance.");
     } else {
       alert("PIN salah. Hubungi Admin GA untuk mendapatkan PIN Petugas.");
@@ -1931,7 +1791,7 @@
     e.preventDefault();
     const btn = document.getElementById("btnSubmitComplaint");
     btn.disabled = true;
-    btn.innerText = "Mengirim ke Cloud Database...";
+    btn.innerText = "Mengirim ke Google Sheets...";
 
     const area = getArea(currentAreaCode);
     const now = new Date();
@@ -1966,26 +1826,19 @@
       evidence: photoLabel
     };
 
-    const { enabled } = getSupabaseConfig();
-    if (enabled) {
+    complaints.unshift(record);
+    saveLocalCache();
+    renderAll();
+
+    if (getGasUrl()) {
       try {
         updateSyncIndicator("syncing", "Saving...");
-        await sbRequest("complaints", {
-          method: "POST",
-          body: JSON.stringify(mapComplaintToDb(record))
-        });
-        await syncFromCloud(false);
+        await gasPost("addComplaint", { record });
+        await syncFromSheets(false);
       } catch (err) {
         console.error(err);
-        updateSyncIndicator("error", "Live DB: Error", err.message);
-        complaints.unshift(record);
-        saveLocalCache();
-        renderAll();
+        updateSyncIndicator("error", "Sheets: Error", err.message);
       }
-    } else {
-      complaints.unshift(record);
-      saveLocalCache();
-      renderAll();
     }
 
     resetComplaintFormCompletely();
@@ -1999,7 +1852,7 @@
     e.preventDefault();
     const btn = document.getElementById("btnSubmitInspection");
     btn.disabled = true;
-    btn.innerText = "Menyimpan Inspeksi...";
+    btn.innerText = "Menyimpan ke Google Sheets...";
 
     const area = getArea(currentAreaCode);
     const now = new Date();
@@ -2030,26 +1883,19 @@
       evidence: document.getElementById("insEvidence").value.trim()
     };
 
-    const { enabled } = getSupabaseConfig();
-    if (enabled) {
+    inspections.unshift(record);
+    saveLocalCache();
+    renderAll();
+
+    if (getGasUrl()) {
       try {
         updateSyncIndicator("syncing", "Saving...");
-        await sbRequest("inspections", {
-          method: "POST",
-          body: JSON.stringify(mapInspectionToDb(record))
-        });
-        await syncFromCloud(false);
+        await gasPost("addInspection", { record });
+        await syncFromSheets(false);
       } catch (err) {
         console.error(err);
-        updateSyncIndicator("error", "Live DB: Error", err.message);
-        inspections.unshift(record);
-        saveLocalCache();
-        renderAll();
+        updateSyncIndicator("error", "Sheets: Error", err.message);
       }
-    } else {
-      inspections.unshift(record);
-      saveLocalCache();
-      renderAll();
     }
 
     setAllParams("BAIK");
@@ -2107,32 +1953,18 @@
       t.slaStatus = now.getTime() <= targetMs ? "ON TIME" : "OVERDUE";
     }
 
-    const { enabled } = getSupabaseConfig();
-    if (enabled) {
+    saveLocalCache();
+    renderAll();
+
+    if (getGasUrl()) {
       try {
         updateSyncIndicator("syncing", "Updating...");
-        await sbRequest(`complaints?id=eq.${encodeURIComponent(id)}`, {
-          method: "PATCH",
-          body: JSON.stringify({
-            status: t.status,
-            pic: t.pic,
-            actual_close: t.actualClose,
-            resolution_hours: t.resolutionHours,
-            sla_status: t.slaStatus,
-            root_cause: t.rootCause,
-            corrective_action: t.correctiveAction
-          })
-        });
-        await syncFromCloud(false);
+        await gasPost("updateComplaint", { record: t });
+        await syncFromSheets(false);
       } catch (err) {
         console.error(err);
-        updateSyncIndicator("error", "Live DB: Error", err.message);
-        saveLocalCache();
-        renderAll();
+        updateSyncIndicator("error", "Sheets: Error", err.message);
       }
-    } else {
-      saveLocalCache();
-      renderAll();
     }
 
     closeTicketModal();
@@ -2147,26 +1979,15 @@
     item.closedDate = formatDateOnly(new Date());
     item.slaStatus = "ON TIME";
 
-    const { enabled } = getSupabaseConfig();
-    if (enabled) {
+    saveLocalCache();
+    renderAll();
+
+    if (getGasUrl()) {
       try {
         updateSyncIndicator("syncing", "Updating...");
-        await sbRequest(`inspections?id=eq.${encodeURIComponent(insId)}`, {
-          method: "PATCH",
-          body: JSON.stringify({
-            closed_date: item.closedDate,
-            sla_status: "ON TIME"
-          })
-        });
-        await syncFromCloud(false);
-      } catch (err) {
-        console.error(err);
-        saveLocalCache();
-        renderAll();
-      }
-    } else {
-      saveLocalCache();
-      renderAll();
+        await gasPost("closeInspection", { id: insId, closedDate: item.closedDate, slaStatus: "ON TIME" });
+        await syncFromSheets(false);
+      } catch (err) { console.error(err); }
     }
     showToast(`Temuan ${insId} ditutup (ON TIME).`);
   }
@@ -2372,12 +2193,11 @@
       applyRoleUI("EMPLOYEE");
     }
 
-    const { enabled } = getSupabaseConfig();
-    if (enabled) {
-      await syncFromCloud(false);
+    if (getGasUrl()) {
+      await syncFromSheets(false);
       startAutoPolling();
     } else {
-      updateSyncIndicator("", "DB: Lokal", "Mode Lokal (Isi Supabase URL & Key untuk Live Sync)");
+      updateSyncIndicator("", "Sheets: Lokal", "Mode Lokal (Isi GAS Web App URL untuk Live Sync)");
     }
   });
 </script>
