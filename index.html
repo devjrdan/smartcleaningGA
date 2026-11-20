@@ -23,10 +23,39 @@
       --crit-bg: #fee2e2;
       --info: #2563eb;
       --info-bg: #dbeafe;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: var(--bg); color: var(--text); min-height: 100vh; padding-bottom: 44px; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 52px;
+      overflow-x: hidden;
+    }
+
+    /* KEYFRAME ANIMATIONS */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.94) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes pulseSoft {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.25); opacity: 0.75; }
+    }
 
     /* HEADER & TOP BAR */
     header {
@@ -36,7 +65,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+      box-shadow: 0 4px 16px rgba(15, 118, 110, 0.22);
     }
     .header-inner {
       max-width: 1120px;
@@ -47,23 +76,30 @@
       justify-content: space-between;
       gap: 12px;
     }
-    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand { display: flex; align-items: center; gap: 12px; }
     .brand-icon {
-      width: 38px; height: 38px; border-radius: 10px;
-      background: rgba(255,255,255,0.16);
+      width: 40px; height: 40px; border-radius: 11px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.25);
       display: flex; align-items: center; justify-content: center;
       font-weight: 800; font-size: 1.05rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.25s var(--ease-out);
     }
-    .brand h1 { font-size: 1.05rem; font-weight: 700; letter-spacing: 0.2px; }
+    .brand:hover .brand-icon { transform: rotate(-4deg) scale(1.05); }
+    .brand h1 { font-size: 1.06rem; font-weight: 700; letter-spacing: 0.2px; }
     .brand p { font-size: 0.75rem; opacity: 0.88; }
 
     .header-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
     .qr-sim-box {
       display: flex; align-items: center; gap: 6px;
-      background: rgba(255,255,255,0.14);
-      padding: 5px 10px; border-radius: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 5px 10px; border-radius: 9px;
       font-size: 0.8rem;
+      transition: background 0.2s;
     }
+    .qr-sim-box:hover { background: rgba(255,255,255,0.22); }
     .qr-sim-box select {
       background: #fff; color: var(--text); border: none;
       border-radius: 6px; padding: 4px 8px; font-size: 0.8rem; font-weight: 600;
@@ -72,21 +108,31 @@
 
     .role-pill, .sync-pill {
       display: inline-flex; align-items: center; gap: 6px;
-      padding: 6px 11px; border-radius: 99px; font-size: 0.76rem; font-weight: 700;
+      padding: 7px 13px; border-radius: 99px; font-size: 0.76rem; font-weight: 700;
       cursor: pointer; border: 1px solid rgba(255,255,255,0.32);
-      background: rgba(0,0,0,0.22); color: #fff; transition: 0.2s;
+      background: rgba(0,0,0,0.22); color: #fff;
+      transition: all 0.2s var(--ease-out);
     }
-    .role-pill:hover, .sync-pill:hover { background: rgba(0,0,0,0.38); }
+    .role-pill:hover, .sync-pill:hover {
+      background: rgba(0,0,0,0.38);
+      transform: translateY(-1px);
+    }
+    .role-pill:active, .sync-pill:active { transform: scale(0.97); }
     .role-pill.staff-active { background: #0284c7; border-color: #7dd3fc; }
     .role-pill.admin-active { background: #b45309; border-color: #fde68a; }
 
     .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; }
-    .sync-dot.connected { background: #4ade80; box-shadow: 0 0 6px #4ade80; }
-    .sync-dot.syncing { background: #facc15; }
+    .sync-dot.connected { background: #4ade80; box-shadow: 0 0 8px #4ade80; }
+    .sync-dot.syncing { background: #facc15; animation: pulseSoft 1s infinite; }
     .sync-dot.error { background: #f87171; }
 
     /* NAVIGATION TABS */
-    .nav-wrap { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 16px; }
+    .nav-wrap {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 16px;
+      box-shadow: 0 1px 4px rgba(15,23,42,0.03);
+    }
     .nav-tabs {
       max-width: 1120px; margin: 0 auto;
       display: flex; gap: 6px; overflow-x: auto;
@@ -95,56 +141,128 @@
       padding: 13px 16px; border: none; background: transparent;
       font-size: 0.86rem; font-weight: 600; color: var(--muted);
       cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap;
-      transition: all 0.15s;
+      transition: all 0.2s var(--ease-out);
+      position: relative;
     }
-    .nav-btn:hover { color: var(--primary); }
+    .nav-btn:hover { color: var(--primary); background: var(--primary-light); }
     .nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
     .badge-count {
       display: inline-block; background: var(--crit); color: #fff;
-      font-size: 0.7rem; padding: 1px 6px; border-radius: 99px; margin-left: 4px;
+      font-size: 0.7rem; padding: 1px 7px; border-radius: 99px; margin-left: 5px;
+      transition: transform 0.2s var(--ease-out);
     }
 
     /* MAIN CONTAINER */
-    main { max-width: 1120px; margin: 20px auto; padding: 0 16px; }
+    main { max-width: 1120px; margin: 22px auto; padding: 0 16px; }
     .view-section { display: none; }
-    .view-section.active { display: block; }
+    .view-section.active {
+      display: block;
+      animation: fadeSlideUp 0.35s var(--ease-out) both;
+    }
 
     /* CARDS & GRIDS */
     .card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 20px; margin-bottom: 18px;
-      box-shadow: 0 2px 6px rgba(15,23,42,0.04);
+      border-radius: 14px; padding: 22px; margin-bottom: 18px;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+      transition: box-shadow 0.25s var(--ease-out), transform 0.25s var(--ease-out);
     }
     .card-header {
       display: flex; flex-wrap: wrap; justify-content: space-between;
       align-items: center; gap: 10px; margin-bottom: 16px;
       padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;
     }
-    .card-title { font-size: 1.05rem; font-weight: 700; color: var(--text); }
-    .card-sub { font-size: 0.82rem; color: var(--muted); }
+    .card-title { font-size: 1.06rem; font-weight: 700; color: var(--text); }
+    .card-sub { font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
 
     /* AREA BANNER */
     .area-banner {
-      background: linear-gradient(135deg, #f0fdfa, #ccfbf1);
-      border: 1px solid #99f6e4; border-radius: 12px;
-      padding: 18px 20px; margin-bottom: 18px;
+      background: linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%);
+      border: 1px solid #99f6e4; border-radius: 14px;
+      padding: 20px 22px; margin-bottom: 18px;
       display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(15, 118, 110, 0.08);
+      animation: fadeSlideUp 0.3s var(--ease-out);
+    }
+    .area-banner::after {
+      content: "";
+      position: absolute;
+      right: -24px;
+      bottom: -28px;
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      background: rgba(15, 118, 110, 0.08);
+      pointer-events: none;
     }
     .area-code-tag {
-      display: inline-block; background: var(--primary); color: #fff;
-      font-size: 0.75rem; font-weight: 700; padding: 3px 9px; border-radius: 6px; margin-bottom: 6px;
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--primary); color: #fff;
+      font-size: 0.75rem; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-bottom: 6px;
+      letter-spacing: 0.3px;
     }
-    .area-banner h2 { font-size: 1.3rem; font-weight: 800; color: var(--primary-dark); }
-    .area-meta { font-size: 0.82rem; color: #115e59; margin-top: 4px; }
+    .area-banner h2 { font-size: 1.35rem; font-weight: 800; color: var(--primary-dark); }
+    .area-meta { font-size: 0.82rem; color: #115e59; margin-top: 4px; font-weight: 500; }
 
     .mode-switch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
     .mode-card {
-      border: 2px solid var(--border); border-radius: 12px; padding: 16px;
-      background: var(--surface); cursor: pointer; text-align: left; transition: 0.15s;
+      border: 2px solid var(--border); border-radius: 14px; padding: 16px 18px;
+      background: var(--surface); cursor: pointer; text-align: left;
+      transition: all 0.22s var(--ease-out);
+      position: relative;
     }
-    .mode-card.active { border-color: var(--primary); background: var(--primary-light); }
-    .mode-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
-    .mode-card p { font-size: 0.78rem; color: var(--muted); }
+    .mode-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(15, 118, 110, 0.1);
+    }
+    .mode-card.active {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 4px 12px rgba(15, 118, 110, 0.12);
+    }
+    .mode-card h3 { font-size: 0.96rem; font-weight: 700; margin-bottom: 4px; color: var(--text); }
+    .mode-card p { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
+
+    .panel-animate { animation: fadeSlideUp 0.28s var(--ease-out) both; }
+
+    /* CATEGORY QUICK-SELECT CARDS */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+      gap: 9px;
+      margin-bottom: 16px;
+    }
+    .cat-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 3px;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: #f8fafc;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.18s var(--ease-out);
+    }
+    .cat-chip:hover {
+      border-color: var(--primary);
+      background: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(15, 118, 110, 0.08);
+    }
+    .cat-chip:active { transform: scale(0.97); }
+    .cat-chip.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.14);
+    }
+    .cat-chip-title { font-size: 0.84rem; font-weight: 700; color: var(--text); }
+    .cat-chip-sub { font-size: 0.72rem; color: var(--muted); line-height: 1.3; }
+    .cat-chip.selected .cat-chip-title { color: var(--primary-dark); }
 
     /* FORMS */
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
@@ -152,25 +270,40 @@
     label { display: block; font-size: 0.82rem; font-weight: 600; margin-bottom: 5px; color: #334155; }
     input[type="text"], input[type="url"], input[type="password"], input[type="number"], select, textarea {
       width: 100%; padding: 10px 12px; border: 1px solid var(--border);
-      border-radius: 8px; font-size: 0.9rem; background: #fff; color: var(--text);
+      border-radius: 9px; font-size: 0.9rem; background: #fff; color: var(--text);
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
     input:focus, select:focus, textarea:focus {
-      outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,118,110,0.12);
+      outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(15,118,110,0.14);
     }
     textarea { resize: vertical; min-height: 76px; }
 
     /* BUTTONS */
     .btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-      padding: 10px 18px; border-radius: 8px; border: none;
-      font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: 0.15s;
+      padding: 11px 18px; border-radius: 9px; border: none;
+      font-size: 0.88rem; font-weight: 600; cursor: pointer;
+      transition: all 0.2s var(--ease-out);
     }
-    .btn-primary { background: var(--primary); color: #fff; }
-    .btn-primary:hover { background: var(--primary-dark); }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: scale(0.98); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .btn-primary {
+      background: var(--primary); color: #fff;
+      box-shadow: 0 3px 10px rgba(15, 118, 110, 0.22);
+    }
+    .btn-primary:hover { background: var(--primary-dark); box-shadow: 0 5px 14px rgba(15, 118, 110, 0.3); }
     .btn-excel { background: var(--excel-green); color: #fff; }
     .btn-excel:hover { background: #0b5a2f; }
+    .btn-danger {
+      background: var(--crit); color: #fff;
+      box-shadow: 0 3px 10px rgba(220, 38, 38, 0.25);
+    }
+    .btn-danger:hover { background: #b91c1c; }
     .btn-outline { background: #fff; color: var(--text); border: 1px solid var(--border); }
-    .btn-outline:hover { background: #f8fafc; }
+    .btn-outline:hover { background: #f8fafc; border-color: #94a3b8; }
+    .btn-danger-outline { background: #fff; color: var(--crit); border: 1px solid #fecaca; }
+    .btn-danger-outline:hover { background: var(--crit-bg); }
     .btn-sm { padding: 6px 12px; font-size: 0.78rem; }
     .btn-block { width: 100%; }
 
@@ -178,42 +311,50 @@
     .param-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(305px, 1fr)); gap: 10px; margin-bottom: 16px; }
     .param-item {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 14px; border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 11px 14px; border: 1px solid #e2e8f0; border-radius: 10px;
       background: #f8fafc;
+      transition: all 0.2s var(--ease-out);
     }
+    .param-item:hover { background: #fff; border-color: #cbd5e1; }
     .param-item.is-kurang { border-color: #fca5a5; background: #fef2f2; }
     .param-name { font-weight: 600; font-size: 0.9rem; }
     .pill-group { display: flex; gap: 4px; }
     .pill-btn {
-      padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border);
+      padding: 6px 10px; border-radius: 7px; border: 1px solid var(--border);
       background: #fff; font-size: 0.75rem; font-weight: 700; cursor: pointer;
+      transition: all 0.15s var(--ease-out);
     }
-    .pill-btn.active-baik { background: var(--good); color: #fff; border-color: var(--good); }
-    .pill-btn.active-kurang { background: var(--crit); color: #fff; border-color: var(--crit); }
+    .pill-btn:active { transform: scale(0.93); }
+    .pill-btn.active-baik { background: var(--good); color: #fff; border-color: var(--good); box-shadow: 0 2px 6px rgba(22, 163, 74, 0.28); }
+    .pill-btn.active-kurang { background: var(--crit); color: #fff; border-color: var(--crit); box-shadow: 0 2px 6px rgba(220, 38, 38, 0.28); }
     .pill-btn.active-na { background: #64748b; color: #fff; border-color: #64748b; }
 
     .live-score-bar {
       display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
-      padding: 12px 16px; border-radius: 10px; background: #f8fafc; border: 1px solid var(--border);
+      padding: 13px 16px; border-radius: 10px; background: #f8fafc; border: 1px solid var(--border);
       margin-bottom: 16px;
     }
 
     /* BADGES */
     .badge {
-      display: inline-block; padding: 3px 9px; border-radius: 99px;
+      display: inline-block; padding: 3px 10px; border-radius: 99px;
       font-size: 0.74rem; font-weight: 700; text-transform: uppercase;
+      transition: all 0.2s;
     }
     .badge-good { background: var(--good-bg); color: var(--good); }
     .badge-warn { background: var(--warn-bg); color: var(--warn); }
     .badge-crit { background: var(--crit-bg); color: var(--crit); }
     .badge-info { background: var(--info-bg); color: var(--info); }
+    .badge-teal { background: var(--primary-light); color: var(--primary-dark); border: 1px solid #99f6e4; }
 
     /* KPI GRID */
     .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 12px; margin-bottom: 18px; }
     .kpi-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-      padding: 14px 16px; border-left: 4px solid var(--primary);
+      background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+      padding: 15px 16px; border-left: 4px solid var(--primary);
+      transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
     }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06); }
     .kpi-card.good { border-left-color: var(--good); }
     .kpi-card.warn { border-left-color: var(--warn); }
     .kpi-card.crit { border-left-color: var(--crit); }
@@ -226,46 +367,88 @@
     table { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
     th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
     th { background: #f8fafc; font-weight: 700; color: #475569; white-space: nowrap; }
+    tr { transition: background 0.15s; }
     tr:hover td { background: #f8fafc; }
 
     /* HORIZONTAL BAR CHART */
-    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 9px; font-size: 0.84rem; }
+    .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-size: 0.84rem; }
     .bar-label { width: 125px; font-weight: 600; flex-shrink: 0; }
     .bar-track { flex: 1; height: 14px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
-    .bar-fill { height: 100%; background: var(--crit); border-radius: 99px; transition: width 0.3s; }
-    .bar-count { width: 68px; text-align: right; font-weight: 700; font-size: 0.8rem; }
+    .bar-fill {
+      height: 100%; background: var(--crit); border-radius: 99px;
+      transition: width 0.6s var(--ease-out);
+    }
+    .bar-count { width: 72px; text-align: right; font-weight: 700; font-size: 0.8rem; }
 
     /* QR GRID */
     .qr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
     .qr-card {
       border: 1px solid var(--border); border-radius: 12px; padding: 16px;
       text-align: center; background: #fff;
+      transition: transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out);
     }
+    .qr-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08); }
     .qr-card img { width: 140px; height: 140px; margin: 10px auto; display: block; border: 1px solid #e2e8f0; padding: 6px; border-radius: 8px; }
+
+    /* TEMPLATE PREVIEW BOX */
+    .template-preview {
+      background: var(--primary-light);
+      border: 1.5px dashed var(--primary);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
 
     /* MODAL */
     .modal-backdrop {
-      display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.55);
+      display: none; position: fixed; inset: 0;
+      background: rgba(15,23,42,0.58);
+      backdrop-filter: blur(3px);
       z-index: 100; align-items: center; justify-content: center; padding: 16px;
     }
     .modal-backdrop.open { display: flex; }
     .modal-box {
-      background: #fff; width: 100%; max-width: 560px; border-radius: 14px;
-      padding: 22px; max-height: 90vh; overflow-y: auto;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      background: #fff; width: 100%; max-width: 580px; border-radius: 16px;
+      padding: 24px; max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 24px 48px rgba(0,0,0,0.24);
+      animation: popIn 0.25s var(--ease-out) both;
     }
+
+    /* CONFIRMATION SUCCESS ICON */
+    .success-circle {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--good-bg); color: var(--good);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.7rem; font-weight: 800; margin: 0 auto 12px auto;
+    }
+    .receipt-box {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px;
+      padding: 12px 14px; margin: 14px 0; text-align: left; font-size: 0.84rem;
+    }
+    .receipt-row {
+      display: flex; justify-content: space-between; padding: 4px 0;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .receipt-row:last-child { border-bottom: none; }
 
     /* TOAST */
     .toast {
-      position: fixed; bottom: 20px; right: 20px; z-index: 200;
-      background: #0f172a; color: #fff; padding: 12px 18px; border-radius: 10px;
-      font-size: 0.85rem; font-weight: 600; box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      transform: translateY(120%); transition: transform 0.25s ease;
+      position: fixed; bottom: 22px; right: 22px; z-index: 200;
+      background: #0f172a; color: #fff; padding: 12px 18px; border-radius: 11px;
+      font-size: 0.85rem; font-weight: 600; box-shadow: 0 10px 24px rgba(0,0,0,0.22);
+      transform: translateY(140%); transition: transform 0.3s var(--ease-out);
+      border-left: 4px solid var(--primary);
     }
     .toast.show { transform: translateY(0); }
 
     @media (max-width: 600px) {
       .mode-switch-grid { grid-template-columns: 1fr; }
+      .cat-grid { grid-template-columns: 1fr 1fr; }
     }
     @media print {
       header, .nav-wrap, .no-print { display: none !important; }
@@ -282,7 +465,7 @@
       <div class="brand-icon">GA</div>
       <div>
         <h1>Smart Cleaning & Facility Care</h1>
-        <p>QR Inspection &bull; Complaint SLA &bull; Outlook-Excel Sync</p>
+        <p>QR Inspection &bull; Complaint SLA &bull; Real-Time Cloud Sync</p>
       </div>
     </div>
 
@@ -296,9 +479,9 @@
         <span id="roleLabel">Mode Petugas / Admin</span>
       </button>
 
-      <button class="sync-pill" id="headerSyncBtn" style="display:none;" onclick="openSyncModal()" title="Konfigurasi Web3Forms Key">
+      <button class="sync-pill" id="headerSyncBtn" style="display:none;" onclick="openSyncModal()" title="Konfigurasi Supabase Cloud Database">
         <span class="sync-dot" id="syncDot"></span>
-        <span id="syncText">Excel Sync</span>
+        <span id="syncText">Live DB</span>
       </button>
     </div>
   </div>
@@ -327,8 +510,8 @@
         <h2 id="bannerName">Toilet Produksi A</h2>
         <div class="area-meta" id="bannerMeta">Jenis: Toilet &bull; Zona: Production A &bull; PIC Default: Cleaning 1 &bull; Target: 4x/hari</div>
       </div>
-      <div style="text-align:right;">
-        <div style="font-size:0.75rem; color:#115e59; font-weight:700;">KODE QR LOKASI</div>
+      <div style="text-align:right; position:relative; z-index:1;">
+        <div style="font-size:0.74rem; color:#115e59; font-weight:700;">KODE QR LOKASI</div>
         <div style="font-family:monospace; font-size:0.95rem; font-weight:800; color:var(--primary-dark);" id="bannerQrVal">INSPECT-TLT-01</div>
       </div>
     </div>
@@ -340,28 +523,37 @@
       </div>
       <div class="mode-card active" id="modeBtnComplaint" onclick="setQrMode('complaint')">
         <h3>&#128226; Lapor Masalah (Karyawan)</h3>
-        <p>Laporkan tissue habis, bau, keran bocor, atau lampu mati dalam 10 detik tanpa login.</p>
+        <p>Laporkan kendala kebersihan atau fasilitas rusak dalam 10 detik tanpa perlu login.</p>
       </div>
     </div>
 
     <!-- MODE A: EMPLOYEE COMPLAINT FORM -->
-    <div id="panelComplaint" class="card">
+    <div id="panelComplaint" class="card panel-animate">
       <div class="card-header">
         <div>
           <div class="card-title">Form Laporan Keluhan Fasilitas</div>
-          <div class="card-sub">Otomatis menghitung Target SLA & meneruskan ke PIC terkait</div>
+          <div class="card-sub">Pilih jenis masalah di bawah — PIC & Target SLA terisi otomatis</div>
         </div>
-        <span class="badge badge-info" id="slaPreviewBadge">SLA: Medium (8 Jam)</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <button type="button" id="quickAddCatBtn" class="btn btn-outline btn-sm" style="display:none;" onclick="openCategoryModal()">+ Tambah Kategori</button>
+          <span class="badge badge-info" id="slaPreviewBadge">SLA: Medium (8 Jam)</span>
+        </div>
       </div>
 
-      <form id="complaintForm" onsubmit="submitComplaint(event)">
+      <form id="complaintForm" onsubmit="submitComplaint(event)" autocomplete="off">
+        <div class="form-group">
+          <label>1. Pilih Kategori Masalah *</label>
+          <div class="cat-grid" id="categoryChipGrid"></div>
+          <input type="hidden" id="cmpCategory" value="Tissue" required />
+        </div>
+
         <div class="form-grid">
           <div class="form-group">
-            <label>Nama / NIK Pelapor *</label>
-            <input type="text" id="cmpReporter" placeholder="Contoh: Budi / 2024108" required />
+            <label>2. Nama / NIK Pelapor *</label>
+            <input type="text" id="cmpReporter" placeholder="Contoh: Budi / 2024108" autocomplete="off" required />
           </div>
           <div class="form-group">
-            <label>Department *</label>
+            <label>3. Department *</label>
             <select id="cmpDept" required>
               <option value="Production">Production</option>
               <option value="Quality">Quality</option>
@@ -375,21 +567,7 @@
             </select>
           </div>
           <div class="form-group">
-            <label>Kategori Masalah *</label>
-            <select id="cmpCategory" onchange="updateComplaintDefaults()" required>
-              <option value="Tissue">Tissue (Habis / Kosong)</option>
-              <option value="Sabun">Sabun Cuci Tangan Habis</option>
-              <option value="Bau">Bau Tidak Nyaman</option>
-              <option value="Lantai">Lantai Kotor / Basah / Licin</option>
-              <option value="Toilet">Toilet Mampet / Kotor</option>
-              <option value="Wastafel">Wastafel Mampet / Kotor</option>
-              <option value="Tempat Sampah">Tempat Sampah Penuh</option>
-              <option value="Keran">Keran Rusak / Bocor</option>
-              <option value="Lampu">Lampu Mati / Redup</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Tingkat Prioritas (SLA) *</label>
+            <label>4. Tingkat Prioritas (SLA) *</label>
             <select id="cmpPriority" onchange="updateSlaBadge()" required>
               <option value="Low">Low (Target Close: 24 Jam)</option>
               <option value="Medium" selected>Medium (Target Close: 8 Jam)</option>
@@ -400,8 +578,8 @@
         </div>
 
         <div class="form-group">
-          <label>Deskripsi Singkat *</label>
-          <textarea id="cmpDesc" placeholder="Jelaskan kondisi spesifik (misal: Bilik 2 tissue habis, keran wastafel kanan menetes terus)" required></textarea>
+          <label>5. Deskripsi Spesifik *</label>
+          <textarea id="cmpDesc" placeholder="Jelaskan lokasi/detail spesifik (misal: Bilik 2 tissue habis, atau keran wastafel kanan menetes terus)" required></textarea>
         </div>
 
         <div class="form-grid">
@@ -415,12 +593,12 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">Kirim Laporan Keluhan</button>
+        <button type="submit" class="btn btn-primary btn-block" id="btnSubmitComplaint">Kirim Laporan Keluhan</button>
       </form>
     </div>
 
     <!-- MODE B: 9-PARAMETER CLEANING INSPECTION (BAIK / KURANG / N/A) -->
-    <div id="panelInspection" class="card" style="display:none;">
+    <div id="panelInspection" class="card panel-animate" style="display:none;">
       <div class="card-header">
         <div>
           <div class="card-title">Checklist Inspeksi 9 Parameter</div>
@@ -463,7 +641,7 @@
 
         <div class="param-list" id="paramContainer"></div>
 
-        <div id="kurangDetailBox" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:14px; margin-bottom:14px;">
+        <div id="kurangDetailBox" class="panel-animate" style="display:none; background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:14px; margin-bottom:14px;">
           <div class="form-grid">
             <div class="form-group" style="margin-bottom:0;">
               <label>Finding Detail (Detail Temuan KURANG) *</label>
@@ -481,7 +659,7 @@
           <input type="text" id="insEvidence" placeholder="Link foto SharePoint/OneDrive atau catatan singkat" />
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block">Simpan Hasil Inspeksi</button>
+        <button type="submit" class="btn btn-primary btn-block" id="btnSubmitInspection">Simpan Hasil Inspeksi</button>
       </form>
     </div>
   </section>
@@ -493,14 +671,17 @@
     <div class="card">
       <div class="card-header">
         <div>
-          <div class="card-title">Daftar Complaint & Follow-Up SLA</div>
+          <div class="card-title">Daftar Complaint & Follow-Up SLA (Live Semua Perangkat)</div>
           <div class="card-sub">Update status penanganan, isi Root Cause & Corrective Action untuk menutup tiket</div>
         </div>
-        <select id="filterTicketStatus" onchange="renderTickets()" style="width:auto;">
-          <option value="ALL">Semua Status</option>
-          <option value="ACTIVE" selected>Belum Closed (Open / In Progress / Hold)</option>
-          <option value="Closed">Closed</option>
-        </select>
+        <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+          <button type="button" class="btn btn-outline btn-sm" onclick="syncFromCloud(true)">&#128260; Refresh Data</button>
+          <select id="filterTicketStatus" onchange="renderTickets()" style="width:auto;">
+            <option value="ALL">Semua Status</option>
+            <option value="ACTIVE" selected>Belum Closed (Open / In Progress / Hold)</option>
+            <option value="Closed">Closed</option>
+          </select>
+        </div>
       </div>
       <div class="table-wrap">
         <table>
@@ -566,9 +747,10 @@
         </div>
       </div>
       <div style="display:flex; flex-wrap:wrap; gap:8px;">
-        <button class="btn btn-excel btn-sm" onclick="exportCsv()">&#128229; Export CSV</button>
+        <button class="btn btn-outline btn-sm" onclick="syncFromCloud(true)">&#128260; Refresh Live</button>
+        <button class="btn btn-primary btn-sm" onclick="openCategoryModal()">&#10133; Kelola Kategori</button>
+        <button class="btn btn-excel btn-sm" onclick="exportCsv()">&#128229; Export Excel CSV</button>
         <button class="btn btn-outline btn-sm" onclick="window.print()">&#128424; Print Laporan / QR</button>
-        <button class="btn btn-outline btn-sm" onclick="resetToBaseline()">Reset Data Simulasi</button>
       </div>
     </div>
 
@@ -666,6 +848,106 @@
 </main>
 
 <!-- ========================================================= -->
+<!-- MODAL: KONFIRMASI SUBMIT & FORM RESET POP-UP              -->
+<!-- ========================================================= -->
+<div class="modal-backdrop" id="submitConfirmModal">
+  <div class="modal-box" style="max-width:440px; text-align:center;">
+    <div class="success-circle">&#10003;</div>
+    <h3 style="font-size:1.15rem; font-weight:800; color:var(--text);">Laporan Terkirim & Form Di-Reset</h3>
+    <p style="font-size:0.82rem; color:var(--muted); margin-top:4px;">
+      Laporan sudah masuk secara real-time ke sistem GA &amp; form telah dibersihkan untuk pelapor berikutnya.
+    </p>
+
+    <div class="receipt-box" id="confirmReceiptBox"></div>
+
+    <div id="urgentEscalateBox" style="display:none; margin-bottom:10px;">
+      <a id="urgentWaLink" href="#" target="_blank" rel="noopener" class="btn btn-danger btn-block" style="text-decoration:none;">
+        &#128680; Kirim Alert Darurat ke PIC (WhatsApp)
+      </a>
+    </div>
+
+    <button type="button" class="btn btn-primary btn-block" onclick="closeConfirmModal()">Selesai &amp; Buat Laporan Baru</button>
+  </div>
+</div>
+
+<!-- ========================================================= -->
+<!-- MODAL: ADMIN TEMPLATE BUILDER - KATEGORI MASALAH BARU     -->
+<!-- ========================================================= -->
+<div class="modal-backdrop" id="categoryModal">
+  <div class="modal-box">
+    <div class="card-header">
+      <div>
+        <div class="card-title">Template Kategori Masalah Fasilitas</div>
+        <div class="card-sub">Standarisasi format kategori baru agar seragam di semua perangkat &amp; Excel</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="closeCategoryModal()">Tutup</button>
+    </div>
+
+    <form onsubmit="saveCustomCategory(event)">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Objek / Nama Kategori (Value Excel) *</label>
+          <input type="text" id="newCatObj" placeholder="Contoh: AC / Exhaust atau Pintu" oninput="updateCategoryPreview()" required />
+        </div>
+        <div class="form-group">
+          <label>Kondisi 1 (Masalah Utama) *</label>
+          <input type="text" id="newCatCond1" placeholder="Contoh: Mati / Tidak Dingin" oninput="updateCategoryPreview()" required />
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Kondisi 2 (Opsional)</label>
+          <input type="text" id="newCatCond2" placeholder="Contoh: Berisik / Bocor" oninput="updateCategoryPreview()" />
+        </div>
+        <div class="form-group">
+          <label>Default Prioritas SLA *</label>
+          <select id="newCatPrio" onchange="updateCategoryPreview()">
+            <option value="Low">Low (24 Jam)</option>
+            <option value="Medium" selected>Medium (8 Jam)</option>
+            <option value="High">High (4 Jam)</option>
+            <option value="Critical">Critical (2 Jam)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Routing PIC Otomatis *</label>
+        <select id="newCatPicRoute" onchange="updateCategoryPreview()"></select>
+      </div>
+
+      <div class="template-preview">
+        <div>
+          <div style="font-size:0.72rem; font-weight:700; color:var(--primary-dark); text-transform:uppercase;">Preview Standar Tampilan</div>
+          <div style="font-size:0.95rem; font-weight:800; color:var(--text); margin-top:2px;" id="catPreviewLabel">Objek (Kondisi 1 / Kondisi 2)</div>
+          <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;" id="catPreviewMeta">Value Excel: - &bull; PIC: Area Default &bull; SLA: Medium</div>
+        </div>
+        <span class="badge badge-teal">Standar Format</span>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-bottom:18px;">Simpan Kategori Baru ke Form</button>
+    </form>
+
+    <div style="border-top:1px solid #e2e8f0; padding-top:14px;">
+      <div style="font-size:0.84rem; font-weight:700; margin-bottom:8px;">Daftar Kategori Aktif Saat Ini:</div>
+      <div class="table-wrap" style="max-height:210px;">
+        <table>
+          <thead>
+            <tr>
+              <th>Label Standar</th>
+              <th>Routing PIC</th>
+              <th>SLA</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="categoryListTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================= -->
 <!-- MODAL: LOGIN PIN PETUGAS CLEANING / ADMIN GA              -->
 <!-- ========================================================= -->
 <div class="modal-backdrop" id="pinModal">
@@ -682,8 +964,8 @@
         <label>PIN Akses (4 Digit) *</label>
         <input type="password" id="pinInput" inputmode="numeric" maxlength="8" placeholder="Masukkan PIN..." required />
         <div style="font-size:0.75rem; color:var(--muted); margin-top:6px;">
-          &bull; <strong>PIN Petugas Cleaning:</strong> Buka Checklist Inspeksi & Follow-Up Tiket<br>
-          &bull; <strong>PIN Admin GA:</strong> Buka Dashboard, QR Stickers & Sync Excel
+          &bull; <strong>PIN Petugas Cleaning:</strong> Buka Checklist Inspeksi &amp; Follow-Up Tiket<br>
+          &bull; <strong>PIN Admin GA:</strong> Buka Dashboard, Tambah Kategori &amp; Config Live DB
         </div>
       </div>
       <button type="submit" class="btn btn-primary btn-block">Buka Akses</button>
@@ -727,44 +1009,49 @@
       </div>
       <div style="display:flex; justify-content:flex-end; gap:8px;">
         <button type="button" class="btn btn-outline" onclick="closeTicketModal()">Batal</button>
-        <button type="submit" class="btn btn-primary">Simpan & Update Excel</button>
+        <button type="submit" class="btn btn-primary" id="btnSaveTicket">Simpan &amp; Sinkronkan</button>
       </div>
     </form>
   </div>
 </div>
 
 <!-- ========================================================= -->
-<!-- MODAL: WEB3FORMS -> OUTLOOK -> EXCEL CONFIG               -->
+<!-- MODAL: SUPABASE REAL-TIME CLOUD DATABASE CONFIG           -->
 <!-- ========================================================= -->
 <div class="modal-backdrop" id="syncModal">
   <div class="modal-box">
     <div class="card-header">
       <div>
-        <div class="card-title">Integrasi Web3Forms &rarr; Outlook &rarr; Excel</div>
-        <div class="card-sub">Jembatan gratis (100% Standard Power Automate License)</div>
+        <div class="card-title">Koneksi Real-Time Database (Supabase)</div>
+        <div class="card-sub">Sinkronisasi 2-arah instan (< 0.3 detik) antar semua HP &amp; Laptop tanpa Google</div>
       </div>
       <button class="btn btn-outline btn-sm" onclick="closeSyncModal()">Tutup</button>
     </div>
 
     <div class="form-group">
-      <label>Web3Forms Access Key</label>
-      <input type="text" id="web3KeyInput" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
-      <div style="font-size:0.76rem; color:var(--muted); margin-top:5px;">
-        Dapatkan gratis di <strong>web3forms.com</strong> memakai email Outlook kantor.
+      <label>Supabase Project URL</label>
+      <input type="url" id="sbUrlInput" placeholder="https://xxxxxxxxxxxx.supabase.co" />
+    </div>
+
+    <div class="form-group">
+      <label>Supabase Anon Public Key</label>
+      <input type="text" id="sbKeyInput" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+      <div style="font-size:0.75rem; color:var(--muted); margin-top:5px;">
+        Ambil dari <strong>Supabase Dashboard &rarr; Project Settings &rarr; API</strong> (atau paste langsung ke konstanta <code>SUPABASE_URL</code> &amp; <code>SUPABASE_ANON_KEY</code> di file <code>index.html</code> agar otomatis aktif di semua HP).
       </div>
     </div>
 
-    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; font-size:0.8rem; margin-bottom:14px;">
-      <div><strong>Antrean Pending Sync:</strong> <span id="pendingQueueCount">0</span> transaksi</div>
-      <div style="color:var(--muted); margin-top:4px;">Setiap submit akan dikirim ke email Outlook dengan subject <code>[GA-CLEANING]</code> untuk ditangkap Power Automate.</div>
+    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:9px; padding:12px; font-size:0.8rem; margin-bottom:14px;">
+      <div><strong>Status Koneksi:</strong> <span id="sbStatusDetail">Belum dikonfigurasi</span></div>
+      <div style="color:var(--muted); margin-top:4px;">Terakhir sinkron: <span id="sbLastSyncTime">-</span></div>
     </div>
 
     <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between;">
-      <button type="button" class="btn btn-outline btn-sm" onclick="testWeb3Ping()">&#9889; Kirim Test Email</button>
-      <div style="display:flex; gap:8px;">
-        <button type="button" class="btn btn-outline btn-sm" onclick="flushSyncQueue()">Sync Antrean</button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="saveSyncConfig()">Simpan Key</button>
+      <div style="display:flex; gap:6px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-outline btn-sm" onclick="testSupabaseConnection()">&#9889; Tes Koneksi</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="seedBaselineToSupabase()">&#128228; Upload Data Simulasi</button>
       </div>
+      <button type="button" class="btn btn-primary btn-sm" onclick="saveSyncConfig()">Simpan &amp; Hubungkan</button>
     </div>
   </div>
 </div>
@@ -773,9 +1060,15 @@
 
 <script>
   // ============================================================================
-  // 1. KONFIGURASI UTAMA (WEB3FORMS KEY, PIN AKSES, DAFTAR PIC & MASTER AREA)
+  // 1. KONFIGURASI UTAMA (SUPABASE REAL-TIME DB, PIN AKSES, PIC & MASTER AREA)
   // ============================================================================
-  const WEB3FORMS_KEY = "82ae7e8d-60cc-4356-a671-44fce300e830";
+  // Paste Project URL & Anon Public Key dari Supabase di sini sebelum commit ke GitHub
+  // agar setiap HP yang scan QR otomatis terhubung ke database bersama:
+  const SUPABASE_URL = "";
+  const SUPABASE_ANON_KEY = "";
+
+  // Opsional: Isi nomor WhatsApp grup/hotline GA (format 62812xxxx) untuk tombol Alert Darurat
+  const GA_EMERGENCY_WA = "";
 
   const ROLE_PINS = {
     STAFF: "1122", // PIN Petugas Cleaning / Maintenance
@@ -803,16 +1096,29 @@
     { code: "PUB-01", name: "Koridor Utama", type: "Area Umum", zone: "Main Building", pic: "Cleaning 1", freq: 3, qr: "INSPECT-PUB-01" }
   ];
 
-  const PARAMETERS = ["Lantai", "Wastafel", "Toilet", "Tissue", "Sabun", "Bau", "Tempat Sampah", "Keran", "Lampu"];
+  // STANDAR KATEGORI KELUHAN BAWAAN
+  const DEFAULT_CATEGORIES = [
+    { value: "Tissue", condition: "Habis / Kosong", picRoute: "AREA_DEFAULT", defaultPriority: "Medium", builtIn: true },
+    { value: "Sabun", condition: "Cuci Tangan Habis", picRoute: "AREA_DEFAULT", defaultPriority: "Medium", builtIn: true },
+    { value: "Bau", condition: "Tidak Nyaman / Menyengat", picRoute: "AREA_DEFAULT", defaultPriority: "High", builtIn: true },
+    { value: "Lantai", condition: "Kotor / Basah / Licin", picRoute: "AREA_DEFAULT", defaultPriority: "High", builtIn: true },
+    { value: "Toilet", condition: "Mampet / Kotor", picRoute: "AREA_DEFAULT", defaultPriority: "High", builtIn: true },
+    { value: "Wastafel", condition: "Mampet / Kotor", picRoute: "AREA_DEFAULT", defaultPriority: "Medium", builtIn: true },
+    { value: "Tempat Sampah", condition: "Penuh / Meluap", picRoute: "AREA_DEFAULT", defaultPriority: "Medium", builtIn: true },
+    { value: "Keran", condition: "Rusak / Bocor", picRoute: "GA Maintenance", defaultPriority: "High", builtIn: true },
+    { value: "Lampu", condition: "Mati / Redup", picRoute: "GA Maintenance", defaultPriority: "Low", builtIn: true }
+  ];
 
+  const PARAMETERS = ["Lantai", "Wastafel", "Toilet", "Tissue", "Sabun", "Bau", "Tempat Sampah", "Keran", "Lampu"];
   const SLA_HOURS = { Critical: 2, High: 4, Medium: 8, Low: 24 };
 
   const STORAGE_KEYS = {
-    INSPECTIONS: "ga_clean_inspections_v4",
-    COMPLAINTS: "ga_clean_complaints_v4",
-    WEB3_KEY: "ga_clean_web3_key_v4",
-    SYNC_QUEUE: "ga_clean_sync_queue_v4",
-    ACTIVE_ROLE: "ga_clean_active_role_v4"
+    INSPECTIONS: "ga_clean_inspections_sb1",
+    COMPLAINTS: "ga_clean_complaints_sb1",
+    CUSTOM_CATS: "ga_clean_custom_cats_sb1",
+    SB_URL: "ga_clean_sb_url_sb1",
+    SB_KEY: "ga_clean_sb_key_sb1",
+    ACTIVE_ROLE: "ga_clean_active_role_sb1"
   };
 
   let currentAreaCode = "TLT-01";
@@ -820,9 +1126,11 @@
   let currentParamState = {};
   let inspections = [];
   let complaints = [];
+  let customCategories = [];
+  let autoPollTimer = null;
 
   // ============================================================================
-  // 2. DATA SIMULASI AWAL (70 INSPECTIONS & 5 COMPLAINTS — BAIK / KURANG)
+  // 2. DATA SIMULASI AWAL (FALLBACK LOKAL / SEED KE CLOUD DB)
   // ============================================================================
   function buildBaselineData() {
     const baseInspections = [];
@@ -876,44 +1184,46 @@
         areaCode: "TLT-01", areaName: "Toilet Produksi A", category: "Tissue", description: "Tissue habis",
         priority: "Medium", status: "Closed", pic: "Cleaning 1", targetClose: "2026-11-02 11:00:00",
         actualClose: "2026-11-02 09:40:00", resolutionHours: 0.5, slaStatus: "ON TIME",
-        rootCause: "Replenishment terlambat", correctiveAction: "Tambah safety stock", repeatComplaint: "No"
+        rootCause: "Replenishment terlambat", correctiveAction: "Tambah safety stock", repeatComplaint: "No", evidence: ""
       },
       {
         id: "CMP-002", timestamp: "2026-11-03 10:00:00", reporter: "User 002", department: "Quality",
         areaCode: "TLT-02", areaName: "Toilet Produksi B", category: "Bau", description: "Bau tidak nyaman",
         priority: "High", status: "Closed", pic: "Cleaning 2", targetClose: "2026-11-03 12:00:00",
         actualClose: "2026-11-03 11:30:00", resolutionHours: 1.5, slaStatus: "ON TIME",
-        rootCause: "Drain kotor", correctiveAction: "Deep cleaning", repeatComplaint: "No"
+        rootCause: "Drain kotor", correctiveAction: "Deep cleaning", repeatComplaint: "No", evidence: ""
       },
       {
         id: "CMP-003", timestamp: "2026-11-05 08:20:00", reporter: "User 003", department: "HR",
         areaCode: "TLT-03", areaName: "Toilet Office", category: "Keran", description: "Keran bocor",
         priority: "High", status: "In Progress", pic: "GA Maintenance", targetClose: "2026-11-05 16:00:00",
         actualClose: "", resolutionHours: null, slaStatus: "OPEN",
-        rootCause: "Seal rusak", correctiveAction: "Ganti seal", repeatComplaint: "Yes"
+        rootCause: "Seal rusak", correctiveAction: "Ganti seal", repeatComplaint: "Yes", evidence: ""
       },
       {
         id: "CMP-004", timestamp: "2026-11-06 12:30:00", reporter: "User 004", department: "Production",
         areaCode: "CAN-01", areaName: "Kantin Utama", category: "Tempat Sampah", description: "Tempat sampah penuh",
         priority: "Medium", status: "Closed", pic: "Cleaning 4", targetClose: "2026-11-06 14:00:00",
         actualClose: "2026-11-06 13:10:00", resolutionHours: 0.67, slaStatus: "ON TIME",
-        rootCause: "Frekuensi kurang", correctiveAction: "Tambah jadwal pickup", repeatComplaint: "No"
+        rootCause: "Frekuensi kurang", correctiveAction: "Tambah jadwal pickup", repeatComplaint: "No", evidence: ""
       },
       {
         id: "CMP-005", timestamp: "2026-11-08 15:00:00", reporter: "User 005", department: "Engineering",
         areaCode: "LKR-01", areaName: "Locker Room", category: "Lampu", description: "Lampu mati",
         priority: "Low", status: "Open", pic: "GA Maintenance", targetClose: "2026-11-09 12:00:00",
         actualClose: "", resolutionHours: null, slaStatus: "OPEN",
-        rootCause: "Belum dicek", correctiveAction: "Penggantian lampu", repeatComplaint: "No"
+        rootCause: "Belum dicek", correctiveAction: "Penggantian lampu", repeatComplaint: "No", evidence: ""
       }
     ];
 
     return { baseInspections, baseComplaints };
   }
 
-  function loadState() {
+  function loadLocalCache() {
     const savedIns = localStorage.getItem(STORAGE_KEYS.INSPECTIONS);
     const savedCmp = localStorage.getItem(STORAGE_KEYS.COMPLAINTS);
+    const savedCats = localStorage.getItem(STORAGE_KEYS.CUSTOM_CATS);
+
     if (savedIns && savedCmp) {
       inspections = JSON.parse(savedIns);
       complaints = JSON.parse(savedCmp);
@@ -921,27 +1231,428 @@
       const { baseInspections, baseComplaints } = buildBaselineData();
       inspections = baseInspections;
       complaints = baseComplaints;
-      saveState();
+      saveLocalCache();
+    }
+
+    if (savedCats) {
+      try { customCategories = JSON.parse(savedCats); } catch (e) { customCategories = []; }
     }
   }
 
-  function saveState() {
+  function saveLocalCache() {
     localStorage.setItem(STORAGE_KEYS.INSPECTIONS, JSON.stringify(inspections));
     localStorage.setItem(STORAGE_KEYS.COMPLAINTS, JSON.stringify(complaints));
-  }
-
-  function resetToBaseline() {
-    if (!confirm("Reset semua data ke 70 inspeksi & 5 komplain simulasi awal?")) return;
-    const { baseInspections, baseComplaints } = buildBaselineData();
-    inspections = baseInspections;
-    complaints = baseComplaints;
-    saveState();
-    renderAll();
-    showToast("Data simulasi awal dipulihkan.");
+    localStorage.setItem(STORAGE_KEYS.CUSTOM_CATS, JSON.stringify(customCategories));
   }
 
   // ============================================================================
-  // 3. SISTEM 3 ROLE & PIN GATE
+  // 3. SUPABASE REST API CLIENT (2-WAY LIVE MULTI-DEVICE SYNC)
+  // ============================================================================
+  function getSupabaseConfig() {
+    const localUrl = (localStorage.getItem(STORAGE_KEYS.SB_URL) || "").trim();
+    const localKey = (localStorage.getItem(STORAGE_KEYS.SB_KEY) || "").trim();
+    const url = (localUrl || SUPABASE_URL.trim()).replace(/\/+$/, "");
+    const key = localKey || SUPABASE_ANON_KEY.trim();
+    return { url, key, enabled: Boolean(url && key) };
+  }
+
+  function updateSyncIndicator(state, label, detail) {
+    document.getElementById("syncDot").className = "sync-dot " + (state || "");
+    document.getElementById("syncText").innerText = label;
+    if (detail) document.getElementById("sbStatusDetail").innerText = detail;
+  }
+
+  async function sbRequest(path, options = {}) {
+    const { url, key, enabled } = getSupabaseConfig();
+    if (!enabled) throw new Error("Supabase belum dikonfigurasi");
+
+    const headers = {
+      "apikey": key,
+      "Authorization": `Bearer ${key}`,
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    };
+
+    const res = await fetch(`${url}/rest/v1/${path}`, {
+      ...options,
+      headers
+    });
+
+    if (!res.ok) {
+      const errText = await res.text();
+      throw new Error(`HTTP ${res.status}: ${errText}`);
+    }
+
+    if (res.status === 204) return null;
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }
+
+  function mapComplaintToDb(c) {
+    return {
+      id: c.id,
+      timestamp: c.timestamp,
+      reporter: c.reporter,
+      department: c.department,
+      area_code: c.areaCode,
+      area_name: c.areaName,
+      category: c.category,
+      description: c.description,
+      priority: c.priority,
+      status: c.status,
+      pic: c.pic,
+      target_close: c.targetClose,
+      actual_close: c.actualClose || "",
+      resolution_hours: c.resolutionHours,
+      sla_status: c.slaStatus,
+      root_cause: c.rootCause || "",
+      corrective_action: c.correctiveAction || "",
+      repeat_complaint: c.repeatComplaint || "No",
+      evidence: c.evidence || ""
+    };
+  }
+
+  function mapComplaintFromDb(row) {
+    return {
+      id: row.id,
+      timestamp: row.timestamp || "",
+      reporter: row.reporter || "",
+      department: row.department || "",
+      areaCode: row.area_code || "",
+      areaName: row.area_name || "",
+      category: row.category || "",
+      description: row.description || "",
+      priority: row.priority || "Medium",
+      status: row.status || "Open",
+      pic: row.pic || "",
+      targetClose: row.target_close || "",
+      actualClose: row.actual_close || "",
+      resolutionHours: row.resolution_hours !== null && row.resolution_hours !== undefined ? Number(row.resolution_hours) : null,
+      slaStatus: row.sla_status || "OPEN",
+      rootCause: row.root_cause || "",
+      correctiveAction: row.corrective_action || "",
+      repeatComplaint: row.repeat_complaint || "No",
+      evidence: row.evidence || ""
+    };
+  }
+
+  function mapInspectionToDb(i) {
+    return {
+      id: i.id,
+      date: i.date,
+      time: i.time,
+      shift: i.shift,
+      area_code: i.areaCode,
+      area_name: i.areaName,
+      inspector: i.inspector,
+      params: i.params || {},
+      kurang_count: i.kurangCount,
+      condition: i.condition,
+      finding_detail: i.findingDetail || "-",
+      action: i.action || "Monitor",
+      pic_action: i.picAction || "",
+      due_date: i.dueDate || "",
+      closed_date: i.closedDate || "",
+      sla_status: i.slaStatus || "OK",
+      evidence: i.evidence || ""
+    };
+  }
+
+  function mapInspectionFromDb(row) {
+    return {
+      id: row.id,
+      date: row.date || "",
+      time: row.time || "",
+      shift: row.shift || "",
+      areaCode: row.area_code || "",
+      areaName: row.area_name || "",
+      inspector: row.inspector || "",
+      params: row.params || {},
+      kurangCount: Number(row.kurang_count || 0),
+      condition: row.condition || "Good",
+      findingDetail: row.finding_detail || "-",
+      action: row.action || "Monitor",
+      picAction: row.pic_action || "",
+      dueDate: row.due_date || "",
+      closedDate: row.closed_date || "",
+      slaStatus: row.sla_status || "OK",
+      evidence: row.evidence || ""
+    };
+  }
+
+  async function syncFromCloud(showNotification = false) {
+    const { enabled } = getSupabaseConfig();
+    if (!enabled) {
+      updateSyncIndicator("", "DB: Lokal", "Mode Lokal (Isi Supabase URL & Key untuk Live Sync)");
+      return false;
+    }
+
+    updateSyncIndicator("syncing", "Syncing...");
+    try {
+      const [cmpRows, insRows, catRows] = await Promise.all([
+        sbRequest("complaints?select=*&order=timestamp.desc"),
+        sbRequest("inspections?select=*&order=date.desc,time.desc"),
+        sbRequest("custom_categories?select=*&order=created_at.asc")
+      ]);
+
+      complaints = (cmpRows || []).map(mapComplaintFromDb);
+      inspections = (insRows || []).map(mapInspectionFromDb);
+      customCategories = (catRows || []).map(r => ({
+        value: r.value,
+        condition: r.condition,
+        picRoute: r.pic_route || "AREA_DEFAULT",
+        defaultPriority: r.default_priority || "Medium",
+        builtIn: false
+      }));
+
+      saveLocalCache();
+      renderCategoryChips();
+      renderAll();
+
+      const nowStr = formatDateTime(new Date());
+      document.getElementById("sbLastSyncTime").innerText = nowStr;
+      updateSyncIndicator("connected", "Live DB: Aktif", `Terhubung ke Supabase (${complaints.length} komplain, ${inspections.length} inspeksi)`);
+      if (showNotification) showToast("Data terbaru berhasil dimuat dari Cloud DB!");
+      return true;
+    } catch (err) {
+      console.error("Supabase sync error:", err);
+      updateSyncIndicator("error", "Live DB: Error", `Gagal terhubung: ${err.message}`);
+      if (showNotification) showToast("Gagal mengambil data dari Supabase. Cek URL/Key.");
+      return false;
+    }
+  }
+
+  function startAutoPolling() {
+    if (autoPollTimer) clearInterval(autoPollTimer);
+    autoPollTimer = setInterval(() => {
+      const { enabled } = getSupabaseConfig();
+      if (enabled && !document.querySelector(".modal-backdrop.open")) {
+        syncFromCloud(false);
+      }
+    }, 15000); // Auto-refresh setiap 15 detik agar semua layar selalu real-time
+  }
+
+  function openSyncModal() {
+    const cfg = getSupabaseConfig();
+    document.getElementById("sbUrlInput").value = cfg.url;
+    document.getElementById("sbKeyInput").value = cfg.key;
+    document.getElementById("syncModal").classList.add("open");
+  }
+  function closeSyncModal() { document.getElementById("syncModal").classList.remove("open"); }
+
+  async function saveSyncConfig() {
+    const url = document.getElementById("sbUrlInput").value.trim().replace(/\/+$/, "");
+    const key = document.getElementById("sbKeyInput").value.trim();
+    localStorage.setItem(STORAGE_KEYS.SB_URL, url);
+    localStorage.setItem(STORAGE_KEYS.SB_KEY, key);
+    closeSyncModal();
+    if (url && key) {
+      await syncFromCloud(true);
+      startAutoPolling();
+    } else {
+      updateSyncIndicator("", "DB: Lokal", "Mode Lokal");
+      showToast("Kredensial dihapus (kembali ke mode lokal).");
+    }
+  }
+
+  async function testSupabaseConnection() {
+    const url = document.getElementById("sbUrlInput").value.trim().replace(/\/+$/, "");
+    const key = document.getElementById("sbKeyInput").value.trim();
+    if (!url || !key) return showToast("Masukkan Supabase URL & Anon Key terlebih dahulu.");
+    localStorage.setItem(STORAGE_KEYS.SB_URL, url);
+    localStorage.setItem(STORAGE_KEYS.SB_KEY, key);
+    const ok = await syncFromCloud(true);
+    if (ok) startAutoPolling();
+  }
+
+  async function seedBaselineToSupabase() {
+    const { enabled } = getSupabaseConfig();
+    if (!enabled) return showToast("Simpan Supabase URL & Key terlebih dahulu.");
+    if (!confirm("Upload 70 data inspeksi & 5 komplain simulasi awal ke Supabase?")) return;
+
+    const { baseInspections, baseComplaints } = buildBaselineData();
+    try {
+      updateSyncIndicator("syncing", "Uploading...");
+      await sbRequest("complaints?on_conflict=id", {
+        method: "POST",
+        headers: { "Prefer": "resolution=merge-duplicates" },
+        body: JSON.stringify(baseComplaints.map(mapComplaintToDb))
+      });
+      await sbRequest("inspections?on_conflict=id", {
+        method: "POST",
+        headers: { "Prefer": "resolution=merge-duplicates" },
+        body: JSON.stringify(baseInspections.map(mapInspectionToDb))
+      });
+      await syncFromCloud(false);
+      showToast("70 inspeksi & 5 komplain simulasi berhasil di-upload ke Supabase!");
+    } catch (err) {
+      updateSyncIndicator("error", "Live DB: Error", err.message);
+      alert("Gagal upload simulasi: " + err.message);
+    }
+  }
+
+  // ============================================================================
+  // 4. TEMPLATE KATEGORI MASALAH BARU (ADMIN BUILDER)
+  // ============================================================================
+  function getAllCategories() {
+    return [...DEFAULT_CATEGORIES, ...customCategories];
+  }
+
+  function formatTitleCase(str) {
+    return str.trim().replace(/\s+/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+  }
+
+  function renderCategoryChips() {
+    const grid = document.getElementById("categoryChipGrid");
+    const currentSelected = document.getElementById("cmpCategory").value;
+    const cats = getAllCategories();
+
+    grid.innerHTML = cats.map(c => {
+      const isSelected = c.value === currentSelected;
+      return `
+        <button type="button" class="cat-chip ${isSelected ? 'selected' : ''}" onclick="selectCategoryChip('${c.value.replace(/'/g, "\\'")}')">
+          <span class="cat-chip-title">${c.value}</span>
+          <span class="cat-chip-sub">(${c.condition})</span>
+        </button>
+      `;
+    }).join("");
+  }
+
+  function selectCategoryChip(catValue) {
+    document.getElementById("cmpCategory").value = catValue;
+    renderCategoryChips();
+    updateComplaintDefaults(true);
+  }
+
+  function openCategoryModal() {
+    const picSel = document.getElementById("newCatPicRoute");
+    picSel.innerHTML = `<option value="AREA_DEFAULT">PIC Area Default (Cleaning 1–4 sesuai lokasi)</option>` +
+      PIC_LIST.map(p => `<option value="${p}">${p}</option>`).join("");
+
+    document.getElementById("newCatObj").value = "";
+    document.getElementById("newCatCond1").value = "";
+    document.getElementById("newCatCond2").value = "";
+    document.getElementById("newCatPrio").value = "Medium";
+    updateCategoryPreview();
+    renderCategoryManageTable();
+    document.getElementById("categoryModal").classList.add("open");
+  }
+
+  function closeCategoryModal() {
+    document.getElementById("categoryModal").classList.remove("open");
+  }
+
+  function updateCategoryPreview() {
+    const objRaw = document.getElementById("newCatObj").value;
+    const c1Raw = document.getElementById("newCatCond1").value;
+    const c2Raw = document.getElementById("newCatCond2").value;
+    const prio = document.getElementById("newCatPrio").value;
+    const route = document.getElementById("newCatPicRoute").value;
+
+    const obj = objRaw.trim() ? formatTitleCase(objRaw) : "Objek";
+    const c1 = c1Raw.trim() ? formatTitleCase(c1Raw) : "Kondisi 1";
+    const c2 = c2Raw.trim() ? formatTitleCase(c2Raw) : "";
+    const condText = c2 ? `${c1} / ${c2}` : c1;
+
+    document.getElementById("catPreviewLabel").innerText = `${obj} (${condText})`;
+    const routeLabel = route === "AREA_DEFAULT" ? "PIC Area Default" : route;
+    document.getElementById("catPreviewMeta").innerText = `Value Excel: "${obj}" • PIC: ${routeLabel} • SLA: ${prio}`;
+  }
+
+  async function saveCustomCategory(e) {
+    e.preventDefault();
+    const obj = formatTitleCase(document.getElementById("newCatObj").value);
+    const c1 = formatTitleCase(document.getElementById("newCatCond1").value);
+    const c2 = document.getElementById("newCatCond2").value.trim() ? formatTitleCase(document.getElementById("newCatCond2").value) : "";
+    const prio = document.getElementById("newCatPrio").value;
+    const route = document.getElementById("newCatPicRoute").value;
+
+    if (!obj || !c1) return;
+
+    const exists = getAllCategories().some(c => c.value.toLowerCase() === obj.toLowerCase());
+    if (exists) {
+      alert(`Kategori "${obj}" sudah ada di daftar standar.`);
+      return;
+    }
+
+    const condFormatted = c2 ? `${c1} / ${c2}` : c1;
+    const newCat = {
+      value: obj,
+      condition: condFormatted,
+      picRoute: route,
+      defaultPriority: prio,
+      builtIn: false
+    };
+
+    customCategories.push(newCat);
+    saveLocalCache();
+    renderCategoryChips();
+    renderCategoryManageTable();
+    selectCategoryChip(obj);
+
+    const { enabled } = getSupabaseConfig();
+    if (enabled) {
+      try {
+        await sbRequest("custom_categories", {
+          method: "POST",
+          body: JSON.stringify({
+            value: newCat.value,
+            condition: newCat.condition,
+            pic_route: newCat.picRoute,
+            default_priority: newCat.defaultPriority
+          })
+        });
+      } catch (err) {
+        console.error("Gagal simpan kategori ke Supabase:", err);
+      }
+    }
+
+    document.getElementById("newCatObj").value = "";
+    document.getElementById("newCatCond1").value = "";
+    document.getElementById("newCatCond2").value = "";
+    updateCategoryPreview();
+    showToast(`Kategori standar "${obj} (${condFormatted})" ditambahkan!`);
+  }
+
+  async function deleteCustomCategory(catValue) {
+    if (!confirm(`Hapus kategori kustom "${catValue}"?`)) return;
+    customCategories = customCategories.filter(c => c.value !== catValue);
+    saveLocalCache();
+    renderCategoryChips();
+    renderCategoryManageTable();
+    if (document.getElementById("cmpCategory").value === catValue) {
+      selectCategoryChip("Tissue");
+    }
+
+    const { enabled } = getSupabaseConfig();
+    if (enabled) {
+      try {
+        await sbRequest(`custom_categories?value=eq.${encodeURIComponent(catValue)}`, { method: "DELETE" });
+      } catch (err) { console.error(err); }
+    }
+    showToast(`Kategori "${catValue}" dihapus.`);
+  }
+
+  function renderCategoryManageTable() {
+    const tbody = document.getElementById("categoryListTable");
+    tbody.innerHTML = getAllCategories().map(c => {
+      const picLabel = c.picRoute === "AREA_DEFAULT" ? "PIC Area Default" : c.picRoute;
+      const actionBtn = c.builtIn
+        ? `<span style="font-size:0.74rem; color:var(--muted);">Bawaan</span>`
+        : `<button type="button" class="btn btn-danger-outline btn-sm" onclick="deleteCustomCategory('${c.value.replace(/'/g, "\\'")}')">Hapus</button>`;
+      return `
+        <tr>
+          <td><strong>${c.value}</strong> <span style="color:var(--muted);">(${c.condition})</span></td>
+          <td>${picLabel}</td>
+          <td><span class="badge badge-info">${c.defaultPriority}</span></td>
+          <td>${actionBtn}</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // ============================================================================
+  // 5. SISTEM 3 ROLE & PIN GATE
   // ============================================================================
   function applyRoleUI(role) {
     currentRole = role;
@@ -954,12 +1665,14 @@
     const tabTickets = document.getElementById("tabBtnTickets");
     const tabDash = document.getElementById("tabBtnDashboard");
     const modeSwitch = document.getElementById("staffModeSwitch");
+    const quickAddCatBtn = document.getElementById("quickAddCatBtn");
 
     roleBtn.classList.remove("staff-active", "admin-active");
 
     if (role === "EMPLOYEE") {
       roleLabel.innerText = "Mode Petugas / Admin";
       syncBtn.style.display = "none";
+      quickAddCatBtn.style.display = "none";
       tabQr.innerText = "1. Lapor Masalah Fasilitas";
       tabTickets.style.display = "none";
       tabDash.style.display = "none";
@@ -970,6 +1683,7 @@
       roleBtn.classList.add("staff-active");
       roleLabel.innerText = "Petugas (Keluar)";
       syncBtn.style.display = "none";
+      quickAddCatBtn.style.display = "none";
       tabQr.innerText = "1. QR Portal (Inspeksi / Lapor)";
       tabTickets.style.display = "inline-block";
       tabDash.style.display = "none";
@@ -979,6 +1693,7 @@
       roleBtn.classList.add("admin-active");
       roleLabel.innerText = "Admin GA (Keluar)";
       syncBtn.style.display = "inline-flex";
+      quickAddCatBtn.style.display = "inline-flex";
       tabQr.innerText = "1. QR Portal (Inspeksi / Lapor)";
       tabTickets.style.display = "inline-block";
       tabDash.style.display = "inline-block";
@@ -1005,10 +1720,12 @@
     if (entered === ROLE_PINS.ADMIN) {
       closePinModal();
       applyRoleUI("ADMIN");
+      syncFromCloud(false);
       showToast("Berhasil masuk sebagai Admin GA.");
     } else if (entered === ROLE_PINS.STAFF) {
       closePinModal();
       applyRoleUI("STAFF");
+      syncFromCloud(false);
       showToast("Berhasil masuk sebagai Petugas Cleaning / Maintenance.");
     } else {
       alert("PIN salah. Hubungi Admin GA untuk mendapatkan PIN Petugas.");
@@ -1016,172 +1733,7 @@
   }
 
   // ============================================================================
-  // 4. JEMBATAN WEB3FORMS -> OUTLOOK -> POWER AUTOMATE STANDARD
-  // ============================================================================
-  function getActiveWeb3Key() {
-    const saved = localStorage.getItem(STORAGE_KEYS.WEB3_KEY);
-    if (saved && saved.trim() !== "") return saved.trim();
-    return WEB3FORMS_KEY.trim();
-  }
-
-  function getSyncQueue() {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEYS.SYNC_QUEUE) || "[]"); }
-    catch (e) { return []; }
-  }
-
-  function setSyncQueue(q) {
-    localStorage.setItem(STORAGE_KEYS.SYNC_QUEUE, JSON.stringify(q));
-    document.getElementById("pendingQueueCount").innerText = q.length;
-  }
-
-  function updateSyncIndicator(state, label) {
-    document.getElementById("syncDot").className = "sync-dot " + (state || "");
-    document.getElementById("syncText").innerText = label;
-  }
-
-  function initSyncStatus() {
-    const key = getActiveWeb3Key();
-    const q = getSyncQueue();
-    if (!key) updateSyncIndicator("", "Excel: Lokal");
-    else if (q.length > 0) updateSyncIndicator("error", `Excel: ${q.length} Pending`);
-    else updateSyncIndicator("connected", "Excel: Aktif");
-  }
-
-  function buildTaggedMessage(actionType, data) {
-    const clean = v => String(v ?? "").replace(/\|\|/g, " ").replace(/==/g, "=").replace(/\r?\n/g, " ").trim();
-    const p = data.params || {};
-    const fields = {
-      ACTION: actionType,
-      ID: data.id,
-      TIMESTAMP: data.timestamp,
-      DATE: data.date,
-      TIME: data.time,
-      SHIFT: data.shift,
-      REPORTER: data.reporter,
-      DEPARTMENT: data.department,
-      AREACODE: data.areaCode,
-      AREANAME: data.areaName,
-      CATEGORY: data.category,
-      DESCRIPTION: data.description,
-      PRIORITY: data.priority,
-      STATUS: data.status,
-      PIC: data.pic,
-      TARGETCLOSE: data.targetClose,
-      ACTUALCLOSE: data.actualClose,
-      ROOTCAUSE: data.rootCause,
-      CORRECTIVEACTION: data.correctiveAction,
-      REPEAT: data.repeatComplaint,
-      INSPECTOR: data.inspector,
-      FINDINGDETAIL: data.findingDetail,
-      ACTIONPLAN: data.action,
-      PICACTION: data.picAction,
-      DUEDATE: data.dueDate,
-      CLOSEDDATE: data.closedDate,
-      EVIDENCE: data.evidence,
-      LANTAI: p["Lantai"],
-      WASTAFEL: p["Wastafel"],
-      TOILET: p["Toilet"],
-      TISSUE: p["Tissue"],
-      SABUN: p["Sabun"],
-      BAU: p["Bau"],
-      TEMPATSAMPAH: p["Tempat Sampah"],
-      KERAN: p["Keran"],
-      LAMPU: p["Lampu"]
-    };
-
-    return Object.entries(fields)
-      .map(([k, v]) => `||${k}==${clean(v)}||`)
-      .join("\n");
-  }
-
-  async function sendViaWeb3Forms(actionType, payloadObj) {
-    const accessKey = getActiveWeb3Key();
-    if (!accessKey) return { ok: true, localOnly: true };
-
-    const bodyJson = {
-      access_key: accessKey,
-      subject: `[GA-CLEANING] ${actionType} - ${payloadObj.id || "TEST"} (${payloadObj.areaCode || ""})`,
-      from_name: "GA Smart Cleaning Portal",
-      message: buildTaggedMessage(actionType, payloadObj)
-    };
-
-    updateSyncIndicator("syncing", "Mengirim...");
-    try {
-      const res = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(bodyJson)
-      });
-      const result = await res.json();
-      if (!res.ok || !result.success) throw new Error(result.message || "Web3Forms error");
-
-      updateSyncIndicator("connected", "Excel: Terkirim");
-      return { ok: true };
-    } catch (err) {
-      const q = getSyncQueue();
-      q.push(bodyJson);
-      setSyncQueue(q);
-      updateSyncIndicator("error", `Excel: ${q.length} Pending`);
-      return { ok: false, queued: true };
-    }
-  }
-
-  async function flushSyncQueue() {
-    const accessKey = getActiveWeb3Key();
-    if (!accessKey) return showToast("Isi Web3Forms Access Key terlebih dahulu.");
-    const q = getSyncQueue();
-    if (q.length === 0) return showToast("Tidak ada antrean tertunda.");
-
-    const remaining = [];
-    for (const item of q) {
-      try {
-        item.access_key = accessKey;
-        const res = await fetch("https://api.web3forms.com/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "Accept": "application/json" },
-          body: JSON.stringify(item)
-        });
-        const data = await res.json();
-        if (!res.ok || !data.success) remaining.push(item);
-      } catch (e) { remaining.push(item); }
-    }
-    setSyncQueue(remaining);
-    initSyncStatus();
-    showToast(remaining.length === 0 ? "Semua antrean terkirim ke Outlook!" : `${remaining.length} data masih gagal terkirim.`);
-  }
-
-  function openSyncModal() {
-    document.getElementById("web3KeyInput").value = getActiveWeb3Key();
-    document.getElementById("pendingQueueCount").innerText = getSyncQueue().length;
-    document.getElementById("syncModal").classList.add("open");
-  }
-  function closeSyncModal() { document.getElementById("syncModal").classList.remove("open"); }
-
-  function saveSyncConfig() {
-    const val = document.getElementById("web3KeyInput").value.trim();
-    localStorage.setItem(STORAGE_KEYS.WEB3_KEY, val);
-    initSyncStatus();
-    closeSyncModal();
-    showToast(val ? "Web3Forms Access Key tersimpan!" : "Key dihapus (mode lokal).");
-  }
-
-  async function testWeb3Ping() {
-    const val = document.getElementById("web3KeyInput").value.trim();
-    if (!val) return showToast("Masukkan Access Key Web3Forms terlebih dahulu.");
-    localStorage.setItem(STORAGE_KEYS.WEB3_KEY, val);
-    showToast("Mengirim test email ke Outlook...");
-    const res = await sendViaWeb3Forms("PING_TEST", {
-      id: "PING-001",
-      timestamp: formatDateTime(new Date()),
-      areaCode: currentAreaCode,
-      areaName: getArea(currentAreaCode).name
-    });
-    if (res.ok) showToast("Test email terkirim! Cek Inbox/Junk Outlook kamu.");
-    else showToast("Gagal mengirim. Pastikan Access Key sudah benar.");
-  }
-
-  // ============================================================================
-  // 5. HELPER & UI RENDERING
+  // 6. HELPER, UNIQUE ID GENERATOR & UI RENDERING
   // ============================================================================
   function formatDateTime(d) {
     const pad = n => String(n).padStart(2, "0");
@@ -1195,6 +1747,14 @@
     const pad = n => String(n).padStart(2, "0");
     return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
   }
+
+  function generateUniqueId(prefix, d) {
+    const pad = n => String(n).padStart(2, "0");
+    const dm = `${pad(d.getDate())}${pad(d.getMonth() + 1)}`;
+    const hms = `${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+    return `${prefix}-${dm}-${hms}`;
+  }
+
   function getArea(code) { return MASTER_AREAS.find(a => a.code === code) || MASTER_AREAS[0]; }
   function showToast(msg) {
     const box = document.getElementById("toastBox");
@@ -1214,7 +1774,8 @@
   function switchTab(tabId) {
     document.querySelectorAll(".view-section").forEach(el => el.classList.remove("active"));
     document.querySelectorAll(".nav-btn").forEach(el => el.classList.remove("active"));
-    document.getElementById(tabId).classList.add("active");
+    const target = document.getElementById(tabId);
+    target.classList.add("active");
     const btn = document.querySelector(`.nav-btn[data-tab="${tabId}"]`);
     if (btn) btn.classList.add("active");
 
@@ -1237,7 +1798,7 @@
     document.getElementById("headerAreaSelect").value = area.code;
     document.getElementById("bannerCode").innerText = area.code;
     document.getElementById("bannerName").innerText = area.name;
-    document.getElementById("bannerMeta").innerHTML = `Jenis: ${area.type} &bull; Zona: ${area.zone} &bull; PIC Default: ${area.pic} &bull; Target: 4x/hari`;
+    document.getElementById("bannerMeta").innerHTML = `Jenis: ${area.type} &bull; Zona: ${area.zone} &bull; PIC Default: ${area.pic} &bull; Target: ${area.freq}x/hari`;
     document.getElementById("bannerQrVal").innerText = area.qr;
 
     const insSel = document.getElementById("insInspector");
@@ -1245,13 +1806,23 @@
     const actSel = document.getElementById("insPicAction");
     if (PIC_LIST.includes("GA/Housekeeping")) actSel.value = "GA/Housekeeping";
 
-    updateComplaintDefaults();
+    updateComplaintDefaults(false);
   }
 
-  function updateComplaintDefaults() {
+  function updateComplaintDefaults(applyDefaultPrio = false) {
     const area = getArea(currentAreaCode);
-    const cat = document.getElementById("cmpCategory").value;
-    document.getElementById("cmpPic").value = (cat === "Keran" || cat === "Lampu") ? "GA Maintenance" : area.pic;
+    const catVal = document.getElementById("cmpCategory").value;
+    const catObj = getAllCategories().find(c => c.value === catVal);
+
+    if (catObj) {
+      document.getElementById("cmpPic").value = catObj.picRoute === "AREA_DEFAULT" ? area.pic : catObj.picRoute;
+      if (applyDefaultPrio && catObj.defaultPriority) {
+        document.getElementById("cmpPriority").value = catObj.defaultPriority;
+        updateSlaBadge();
+      }
+    } else {
+      document.getElementById("cmpPic").value = area.pic;
+    }
   }
 
   function updateSlaBadge() {
@@ -1307,17 +1878,68 @@
   }
 
   // ============================================================================
-  // 6. SUBMIT HANDLERS
+  // 7. SUBMIT HANDLERS, FULL FORM RESET & CONFIRMATION POP-UP
   // ============================================================================
+  function resetComplaintFormCompletely() {
+    const form = document.getElementById("complaintForm");
+    form.reset();
+    document.getElementById("cmpReporter").value = "";
+    document.getElementById("cmpDept").selectedIndex = 0;
+    document.getElementById("cmpDesc").value = "";
+    document.getElementById("cmpPhoto").value = "";
+    selectCategoryChip("Tissue");
+    document.getElementById("cmpPriority").value = "Medium";
+    updateSlaBadge();
+    updateComplaintDefaults(false);
+  }
+
+  function showSubmitConfirmationModal(record) {
+    const receipt = document.getElementById("confirmReceiptBox");
+    receipt.innerHTML = `
+      <div class="receipt-row"><span style="color:var(--muted);">No. Tiket</span><strong>${record.id}</strong></div>
+      <div class="receipt-row"><span style="color:var(--muted);">Lokasi</span><strong>${record.areaCode} - ${record.areaName}</strong></div>
+      <div class="receipt-row"><span style="color:var(--muted);">Kategori</span><strong>${record.category}</strong></div>
+      <div class="receipt-row"><span style="color:var(--muted);">Prioritas SLA</span><strong>${record.priority} (Target: ${record.targetClose})</strong></div>
+      <div class="receipt-row"><span style="color:var(--muted);">PIC Bertugas</span><strong>${record.pic}</strong></div>
+    `;
+
+    const urgentBox = document.getElementById("urgentEscalateBox");
+    if (record.priority === "Critical" || record.priority === "High") {
+      const msg = encodeURIComponent(
+        `*[ALERT FASILITAS ${record.priority.toUpperCase()}]*\n` +
+        `ID: ${record.id}\n` +
+        `Lokasi: ${record.areaCode} - ${record.areaName}\n` +
+        `Masalah: ${record.category} - ${record.description}\n` +
+        `PIC: ${record.pic}\n` +
+        `Target SLA: ${record.targetClose}`
+      );
+      const waBase = GA_EMERGENCY_WA ? `https://wa.me/${GA_EMERGENCY_WA}?text=${msg}` : `https://api.whatsapp.com/send?text=${msg}`;
+      document.getElementById("urgentWaLink").href = waBase;
+      urgentBox.style.display = "block";
+    } else {
+      urgentBox.style.display = "none";
+    }
+
+    document.getElementById("submitConfirmModal").classList.add("open");
+  }
+
+  function closeConfirmModal() {
+    document.getElementById("submitConfirmModal").classList.remove("open");
+  }
+
   async function submitComplaint(e) {
     e.preventDefault();
+    const btn = document.getElementById("btnSubmitComplaint");
+    btn.disabled = true;
+    btn.innerText = "Mengirim ke Cloud Database...";
+
     const area = getArea(currentAreaCode);
     const now = new Date();
     const priority = document.getElementById("cmpPriority").value;
     const category = document.getElementById("cmpCategory").value;
     const targetDate = new Date(now.getTime() + (SLA_HOURS[priority] || 8) * 3600000);
 
-    const newId = `CMP-${String(complaints.length + 1).padStart(3, "0")}`;
+    const newId = generateUniqueId("CMP", now);
     const isRepeat = complaints.some(c => c.areaCode === area.code && c.category === category) ? "Yes" : "No";
     const photoInput = document.getElementById("cmpPhoto");
     const photoLabel = photoInput.files && photoInput.files[0] ? `Photo: ${photoInput.files[0].name}` : "";
@@ -1344,19 +1966,41 @@
       evidence: photoLabel
     };
 
-    complaints.unshift(record);
-    saveState();
-    renderAll();
+    const { enabled } = getSupabaseConfig();
+    if (enabled) {
+      try {
+        updateSyncIndicator("syncing", "Saving...");
+        await sbRequest("complaints", {
+          method: "POST",
+          body: JSON.stringify(mapComplaintToDb(record))
+        });
+        await syncFromCloud(false);
+      } catch (err) {
+        console.error(err);
+        updateSyncIndicator("error", "Live DB: Error", err.message);
+        complaints.unshift(record);
+        saveLocalCache();
+        renderAll();
+      }
+    } else {
+      complaints.unshift(record);
+      saveLocalCache();
+      renderAll();
+    }
 
-    document.getElementById("cmpDesc").value = "";
-    document.getElementById("cmpPhoto").value = "";
+    resetComplaintFormCompletely();
+    showSubmitConfirmationModal(record);
 
-    const syncRes = await sendViaWeb3Forms("NEW_COMPLAINT", record);
-    showToast(syncRes.ok && !syncRes.localOnly ? `Laporan ${newId} terkirim ke GA & Excel!` : `Laporan ${newId} berhasil dicatat.`);
+    btn.disabled = false;
+    btn.innerText = "Kirim Laporan Keluhan";
   }
 
   async function submitInspection(e) {
     e.preventDefault();
+    const btn = document.getElementById("btnSubmitInspection");
+    btn.disabled = true;
+    btn.innerText = "Menyimpan Inspeksi...";
+
     const area = getArea(currentAreaCode);
     const now = new Date();
     const tomorrow = new Date(now.getTime() + 24 * 3600000);
@@ -1364,10 +2008,7 @@
     const kurangItems = PARAMETERS.filter(p => currentParamState[p] === "KURANG");
     const kurangCount = kurangItems.length;
     const condition = kurangCount === 0 ? "Good" : (kurangCount === 1 ? "Need Attention" : "Critical");
-
-    const ymd = formatDateOnly(now).replace(/-/g, "");
-    const seq = String(inspections.length + 1).padStart(2, "0");
-    const newId = `INS-${ymd}-${seq}`;
+    const newId = generateUniqueId("INS", now);
 
     const record = {
       id: newId,
@@ -1389,14 +2030,33 @@
       evidence: document.getElementById("insEvidence").value.trim()
     };
 
-    inspections.unshift(record);
-    saveState();
+    const { enabled } = getSupabaseConfig();
+    if (enabled) {
+      try {
+        updateSyncIndicator("syncing", "Saving...");
+        await sbRequest("inspections", {
+          method: "POST",
+          body: JSON.stringify(mapInspectionToDb(record))
+        });
+        await syncFromCloud(false);
+      } catch (err) {
+        console.error(err);
+        updateSyncIndicator("error", "Live DB: Error", err.message);
+        inspections.unshift(record);
+        saveLocalCache();
+        renderAll();
+      }
+    } else {
+      inspections.unshift(record);
+      saveLocalCache();
+      renderAll();
+    }
+
     setAllParams("BAIK");
     document.getElementById("insEvidence").value = "";
-    renderAll();
-
-    const syncRes = await sendViaWeb3Forms("NEW_INSPECTION", record);
-    showToast(syncRes.ok && !syncRes.localOnly ? `Inspeksi ${newId} (${condition}) terkirim ke Excel!` : `Inspeksi ${newId} (${condition}) disimpan.`);
+    btn.disabled = false;
+    btn.innerText = "Simpan Hasil Inspeksi";
+    showToast(`Inspeksi ${newId} (${condition}) berhasil disimpan!`);
   }
 
   function openTicketModal(id) {
@@ -1419,9 +2079,17 @@
 
   async function saveTicketUpdate(e) {
     e.preventDefault();
+    const btn = document.getElementById("btnSaveTicket");
+    btn.disabled = true;
+    btn.innerText = "Menyimpan...";
+
     const id = document.getElementById("editTicketId").value;
     const t = complaints.find(c => c.id === id);
-    if (!t) return;
+    if (!t) {
+      btn.disabled = false;
+      btn.innerText = "Simpan & Sinkronkan";
+      return;
+    }
 
     const newStatus = document.getElementById("editTicketStatus").value;
     t.status = newStatus;
@@ -1439,11 +2107,37 @@
       t.slaStatus = now.getTime() <= targetMs ? "ON TIME" : "OVERDUE";
     }
 
-    saveState();
-    closeTicketModal();
-    renderAll();
+    const { enabled } = getSupabaseConfig();
+    if (enabled) {
+      try {
+        updateSyncIndicator("syncing", "Updating...");
+        await sbRequest(`complaints?id=eq.${encodeURIComponent(id)}`, {
+          method: "PATCH",
+          body: JSON.stringify({
+            status: t.status,
+            pic: t.pic,
+            actual_close: t.actualClose,
+            resolution_hours: t.resolutionHours,
+            sla_status: t.slaStatus,
+            root_cause: t.rootCause,
+            corrective_action: t.correctiveAction
+          })
+        });
+        await syncFromCloud(false);
+      } catch (err) {
+        console.error(err);
+        updateSyncIndicator("error", "Live DB: Error", err.message);
+        saveLocalCache();
+        renderAll();
+      }
+    } else {
+      saveLocalCache();
+      renderAll();
+    }
 
-    await sendViaWeb3Forms("UPDATE_COMPLAINT", t);
+    closeTicketModal();
+    btn.disabled = false;
+    btn.innerText = "Simpan & Sinkronkan";
     showToast(`Tiket ${id} diperbarui (${newStatus}).`);
   }
 
@@ -1452,14 +2146,33 @@
     if (!item) return;
     item.closedDate = formatDateOnly(new Date());
     item.slaStatus = "ON TIME";
-    saveState();
-    renderAll();
-    await sendViaWeb3Forms("CLOSE_INSPECTION", item);
+
+    const { enabled } = getSupabaseConfig();
+    if (enabled) {
+      try {
+        updateSyncIndicator("syncing", "Updating...");
+        await sbRequest(`inspections?id=eq.${encodeURIComponent(insId)}`, {
+          method: "PATCH",
+          body: JSON.stringify({
+            closed_date: item.closedDate,
+            sla_status: "ON TIME"
+          })
+        });
+        await syncFromCloud(false);
+      } catch (err) {
+        console.error(err);
+        saveLocalCache();
+        renderAll();
+      }
+    } else {
+      saveLocalCache();
+      renderAll();
+    }
     showToast(`Temuan ${insId} ditutup (ON TIME).`);
   }
 
   // ============================================================================
-  // 7. RENDERING TICKETS, DASHBOARD & QR STICKERS
+  // 8. RENDERING TICKETS, DASHBOARD & QR STICKERS
   // ============================================================================
   function renderTickets() {
     const filter = document.getElementById("filterTicketStatus").value;
@@ -1627,9 +2340,10 @@
     renderDashboard();
   }
 
-  window.addEventListener("DOMContentLoaded", () => {
-    loadState();
+  window.addEventListener("DOMContentLoaded", async () => {
+    loadLocalCache();
     populatePicDropdowns();
+    renderCategoryChips();
 
     const headerSel = document.getElementById("headerAreaSelect");
     const dashSel = document.getElementById("dashFilterArea");
@@ -1647,8 +2361,7 @@
     }
 
     setAllParams("BAIK");
-    updateSlaBadge();
-    initSyncStatus();
+    selectCategoryChip("Tissue");
     renderQrStickers();
     renderAll();
 
@@ -1657,6 +2370,14 @@
       applyRoleUI(savedRole);
     } else {
       applyRoleUI("EMPLOYEE");
+    }
+
+    const { enabled } = getSupabaseConfig();
+    if (enabled) {
+      await syncFromCloud(false);
+      startAutoPolling();
+    } else {
+      updateSyncIndicator("", "DB: Lokal", "Mode Lokal (Isi Supabase URL & Key untuk Live Sync)");
     }
   });
 </script>
